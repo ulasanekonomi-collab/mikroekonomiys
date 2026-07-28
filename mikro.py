@@ -161,7 +161,7 @@ with col2:
     else:
         st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar:.2f} jam**.")
         
-    st.write(f"- Hasil upah yang diperoleh (**Rp{total_upah_diterima:,.0f}**) digunakan untuk membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+    st.write(f"- Hasil upah yang diperoleh digunakan untuk membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
     st.write("- **Hasil:** Bebas dari keharusan menanam padi & ternak ayam sendiri!")
     
     st.metric(
