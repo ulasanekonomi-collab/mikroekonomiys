@@ -5,14 +5,33 @@ import plotly.express as px
 # Konfigurasi Halaman Streamlit
 st.set_page_config(
     page_title="No Market, No Happy Lab - Bab 1",
-    page_icon="🍳",
+    page_icon="⚖️",
     layout="wide"
 )
 
-# Header & Judul
-st.title("🍳 No Market, No Happy Lab")
+# ==========================================
+# SIDEBAR: IDENTITAS PENGEMBANG & KAMPUS
+# ==========================================
+with st.sidebar:
+    # Mengatur layout 2 kolom untuk logo dan foto agar tampil sejajar & estetik
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.image("logounisbatrans.jpg", use_column_width=True)
+    with col2:
+        st.image("yuka.png", use_column_width=True)
+    
+    # Teks Identitas Pengembang
+    st.caption("Dikembangkan oleh **Yuhka Sundaya**  \n*Ekonomi Pembangunan Unisba, 2026*")
+    st.divider()
+
+# ==========================================
+# HEADER & UTAMA
+# ==========================================
+st.title("⚖️ NO MARKET, NO HAPPY LAB")
 st.caption("Modul 1: Simulator Efisiensi Spesialisasi & Pertukaran Pasar")
 st.markdown("---")
+
+# ... (sisa kode simulasi ke bawah tetap sama)
 
 # Deskripsi Pengantar
 st.markdown("""
