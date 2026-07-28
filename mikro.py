@@ -116,7 +116,7 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
         st.caption(f"🔋 Sisa Energi Hidup: {int(energi_persen * 100)}% — {pesan_emosi}")
         st.write(f"Sebagai seorang **{profesi}** dengan upah **Rp{upah_per_jam:,.0f}/jam**:")
         st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar * 60:.1f} menit**." if jam_kerja_pasar < 1 else f"- Durasi kerja: **{jam_kerja_pasar:.2f} jam**.")
-        st.write(f"- Hasil upah yang diperoleh (**Rp{total_upah_diterima:,.0f}**) digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+        st.write(f"- Uang upah digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
         st.write("- **Hasil:** Bebas dari keharusan menanam padi & ternak ayam sendiri!")
         st.metric("Total Waktu Kerja Dikorbankan", f"{jam_kerja_pasar * 60:.1f} Menit" if jam_kerja_pasar < 1 else f"{jam_kerja_pasar:.2f} Jam")
 
