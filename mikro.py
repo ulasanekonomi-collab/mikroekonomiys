@@ -355,205 +355,140 @@ elif pilihan_modul == "Bab 2: Ekspresi Masyarakat Konsumen":
 # HALAMAN 4: BAB 3 (GARIS ANGGARAN / BUDGET LINE)
 # ==========================================
 elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
-  st.title("💳 BAB 3: KETIKA KEBAHAGIAAN DIBATASI GARIS ANGGARAN")
-  st.caption(
-      "Modul Simulasi Batas Anggaran (Budget Line), Intersep, dan Area Pilihan"
-      " Konsumen"
-  )
-  st.markdown("---")
-
-  # ------------------------------------------
-  # 1. PENGANTAR KONSEPTUAL BAB 3
-  # ------------------------------------------
-  st.subheader("💰 Uang Membatasi Pilihan Konsumen")
-  st.write("""
-    Meskipun konsumen menginginkan kepuasan setinggi-tingginya, dalam kehidupan nyata pilihan kita selalu dibatasi oleh **jumlah uang yang dimiliki ($M$)** dan **harga barang di pasar ($Px$ & $Py$)**.
+    st.title("💳 BAB 3: KETIKA KEBAHAGIAAN DIBATASI GARIS ANGGARAN")
+    st.caption("Modul Simulasi Batas Anggaran (Budget Line), Intersep, dan Area Pilihan Konsumen")
+    st.markdown("---")
+    
+    st.subheader("💰 Uang Membatasi Pilihan Konsumen")
+    st.write("""
+    Meskipun konsumen menginginkan kepuasan setinggi-tingginya, dalam kehidupan nyata pilihan kita selalu dibatasi oleh **jumlah uang yang dimiliki ($M$)** dan **harga barang di pasar ($P_x$ & $P_y$)**.
     Persamaan matematis Garis Anggaran (*Budget Line*) dituliskan sebagai:
     $$M = P_x \cdot X + P_y \cdot Y$$
     """)
+    
+    st.sidebar.header("⚙️ Parameter Bab 3")
+    m_anggaran = st.sidebar.number_input("Pendapatan / Saldo M (Rp):", min_value=5000, value=20000, step=2500)
+    px_makanan = st.sidebar.number_input("Harga Makanan Px (Rp/porsi):", min_value=1000, value=5000, step=1000)
+    py_data = st.sidebar.number_input("Harga Paket Data Py (Rp/paket):", min_value=1000, value=10000, step=1000)
 
-  # ------------------------------------------
-  # 2. PARAMETER INPUT
-  # ------------------------------------------
-  st.sidebar.header("⚙️ Parameter Bab 3")
-  m_anggaran = st.sidebar.number_input(
-      "Pendapatan / Saldo M (Rp):", min_value=5000, value=20000, step=2500
-  )
-  px_makanan = st.sidebar.number_input(
-      "Harga Makanan Px (Rp/porsi):", min_value=1000, value=5000, step=1000
-  )
-  py_data = st.sidebar.number_input(
-      "Harga Paket Data Py (Rp/paket):", min_value=1000, value=10000, step=1000
-  )
+    # HITUNG INTERSEP MAKSIMAL SECARA EKSPLISIT (FLOAT)
+    max_x = float(m_anggaran / px_makanan) if px_makanan > 0 else 0.0  # (20.000 / 5.000 = 4.0)
+    max_y = float(m_anggaran / py_data) if py_data > 0 else 0.0        # (20.000 / 10.000 = 2.0)
 
-  # Hitung Titik Potong Maksimal (Intersep)
-  max_x = m_anggaran / px_makanan
-  max_y = m_anggaran / py_data
+    st.markdown("---")
+    st.subheader("📊 Simulator Garis Anggaran Interaktif")
+    
+    col_inputs, col_status = st.columns([1, 1])
+    
+    with col_inputs:
+        st.write("**Coba Masukkan Kombinasi Barang yang Ingin Dibeli:**")
+        pilihan_x = st.slider("Jumlah Makanan (X):", min_value=0.0, max_value=float(max_x * 1.5), value=2.0, step=0.5)
+        pilihan_y = st.slider("Jumlah Paket Data (Y):", min_value=0.0, max_value=float(max_y * 1.5), value=1.0, step=0.5)
+        
+        total_biaya = (pilihan_x * px_makanan) + (pilihan_y * py_data)
+        selisih = m_anggaran - total_biaya
 
-  st.markdown("---")
-  st.subheader("📊 Simulator Garis Anggaran Interaktif")
+    with col_status:
+        st.write("**Analisis Posisi Pilihan Konsumen:**")
+        if total_biaya == m_anggaran:
+            st.success("🟢 **TEPAT PADA GARIS ANGGARAN (On Budget Line)**")
+            st.write(f"Total Belanja: **Rp {total_biaya:,.0f}** | Sisa Uang: **Rp 0**  \nSeluruh anggaran habis secara optimal untuk konsumsi.")
+        elif total_biaya < m_anggaran:
+            st.info("🟡 **DI BAWAH GARIS ANGGARAN (Under Budget)**")
+            st.write(f"Total Belanja: **Rp {total_biaya:,.0f}** | Sisa Saldo: **Rp {selisih:,.0f}**  \nKombinasi ini bisa dibeli, tetapi uangmu belum dimanfaatkan sepenuhnya.")
+        else:
+            st.error("🔴 **DI ATAS GARIS ANGGARAN (Unattainable / Impossible)**")
+            st.write(f"Total Belanja: **Rp {total_biaya:,.0f}** | Kurang Saldo: **Rp {abs(selisih):,.0f}**  \nKombinasi ini terlalu mahal! Ini hanya menjadi 'angan-angan'.")
 
-  col_inputs, col_status = st.columns([1, 1])
-
-  with col_inputs:
-    st.write("**Coba Masukkan Kombinasi Barang yang Ingin Dibeli:**")
-    pilihan_x = st.slider(
-        "Jumlah Makanan (X):",
-        min_value=0.0,
-        max_value=float(max_x * 1.5),
-        value=2.0,
-        step=0.5,
-    )
-    pilihan_y = st.slider(
-        "Jumlah Paket Data (Y):",
-        min_value=0.0,
-        max_value=float(max_y * 1.5),
-        value=1.0,
-        step=0.5,
-    )
-
-    total_biaya = (pilihan_x * px_makanan) + (pilihan_y * py_data)
-    selisih = m_anggaran - total_biaya
-
-  with col_status:
-    st.write("**Analisis Posisi Pilihan Konsumen:**")
-    if total_biaya == m_anggaran:
-      st.success("🟢 **TEPAT PADA GARIS ANGGARAN (On Budget Line)**")
-      st.write(
-          f"Total Belanja: **Rp {total_biaya:,.0f}** | Sisa Uang: **Rp"
-          " 0**  \nSeluruh anggaran habis secara optimal untuk konsumsi."
-      )
-    elif total_biaya < m_anggaran:
-      st.info("🟡 **DI BAWAH GARIS ANGGARAN (Under Budget)**")
-      st.write(
-          f"Total Belanja: **Rp {total_biaya:,.0f}** | Sisa Saldo: **Rp"
-          f" {selisih:,.0f}**  \nKombinasi ini bisa dibeli, tetapi uangmu belum"
-          " dimanfaatkan sepenuhnya untuk memaksimalkan kepuasan."
-      )
-    else:
-      st.error("🔴 **DI ATAS GARIS ANGGARAN (Unattainable / Impossible)**")
-      st.write(
-          f"Total Belanja: **Rp {total_biaya:,.0f}** | Kurang Saldo: **Rp"
-          f" {abs(selisih):,.0f}**  \nKombinasi ini terlalu mahal! Ini hanya"
-          " menjadi 'angan-angan' karena melebihi anggaran yang dimiliki."
-      )
-
-# ------------------------------------------
-    # 3. GRAFIK PLOTLY GARIS ANGGARAN (DIPERBAIKI)
-    # ------------------------------------------
-    # Menghasilkan array titik untuk garis lurus sempurna: Y = (M - Px*X) / Py
+    # GRAFIK GARIS ANGGARAN PRESISI
+    # Membuat 100 titik kontinu dari X=0 sampai X=max_x
     x_line = np.linspace(0, max_x, 100)
     y_line = (m_anggaran - (px_makanan * x_line)) / py_data
 
     fig_bl = go.Figure()
 
-    # Garis Anggaran (Budget Line)
-    fig_bl.add_trace(
-        go.Scatter(
-            x=x_line,
-            y=y_line,
-            mode='lines',
-            name='Garis Anggaran (Budget Line)',
-            line=dict(color='#2196F3', width=4),
-        )
-    )
+    # Garis Anggaran Biru
+    fig_bl.add_trace(go.Scatter(
+        x=x_line, 
+        y=y_line, 
+        mode='lines', 
+        name='Garis Anggaran (Budget Line)',
+        line=dict(color='#2196F3', width=4)
+    ))
 
-    # Titik Pilihan Kombinasi Konsumen
-    # Menentukan warna titik secara otomatis berdasarkan status anggaran
+    # Penentuan Warna Titik Pilihan
     if total_biaya == m_anggaran:
-      warna_titik = '#4CAF50'  # Hijau (Efisien / On Budget)
-      status_titik = 'Tepat di Garis Anggaran'
+        warna_titik = '#4CAF50' # Hijau
+        label_posisi = "Tepat di Garis Anggaran"
     elif total_biaya < m_anggaran:
-      warna_titik = '#FFC107'  # Kuning/Oranye (Under Budget)
-      status_titik = 'Di Bawah Garis (Sisa Saldo)'
+        warna_titik = '#FFC107' # Kuning
+        label_posisi = "Di Bawah Garis (Sisa Saldo)"
     else:
-      warna_titik = '#F44336'  # Merah (Over Budget)
-      status_titik = 'Di Atas Garis (Tidak Terjangkau)'
+        warna_titik = '#F44336' # Merah
+        label_posisi = "Di Atas Garis (Terlalu Mahal)"
 
-    fig_bl.add_trace(
-        go.Scatter(
-            x=[pilihan_x],
-            y=[pilihan_y],
-            mode='markers+text',
-            name='Pilihan Kamu',
-            text=[f'Pilihan ({pilihan_x}, {pilihan_y}) - {status_titik}'],
-            textposition='top right',
-            marker=dict(size=14, color=warna_titik, line=dict(width=2, color='black')),
-        )
-    )
+    # Titik Plotting Konsumen
+    fig_bl.add_trace(go.Scatter(
+        x=[pilihan_x], 
+        y=[pilihan_y], 
+        mode='markers+text', 
+        name='Pilihan Kamu',
+        text=[f'Pilihan ({pilihan_x}, {pilihan_y}) - {label_posisi}'],
+        textposition="top right", 
+        marker=dict(size=14, color=warna_titik, line=dict(width=2, color='black'))
+    ))
 
     fig_bl.update_layout(
-        title=f'Garis Anggaran Konsumen (Pendapatan M = Rp {m_anggaran:,.0f})',
-        xaxis_title='Makanan / Porsi (X)',
-        yaxis_title='Paket Data / Unit (Y)',
-        xaxis=dict(range=[-0.2, max_x * 1.25]),
-        yaxis=dict(range=[-0.2, max_y * 1.25]),
-        template='plotly_white',
+        title=f"Garis Anggaran Konsumen (Pendapatan M = Rp {m_anggaran:,.0f})",
+        xaxis_title="Makanan / Porsi (X)",
+        yaxis_title="Paket Data / Unit (Y)",
+        xaxis=dict(range=[-0.2, max(max_x * 1.2, 5)]),
+        yaxis=dict(range=[-0.2, max(max_y * 1.2, 3)]),
+        template="plotly_white"
     )
 
     st.plotly_chart(fig_bl, use_container_width=True)
 
-  # ------------------------------------------
-  # 4. KUIS EVALUASI BAB 3
-  # ------------------------------------------
-  st.markdown("---")
-  st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 3)")
-
-  with st.form("kuis_bab3"):
-    st.markdown(
-        "**1. Jika seorang mahasiswa memiliki uang Rp20.000, harga makanan"
-        " Rp5.000/porsi, dan harga paket data Rp10.000/paket, berapakah jumlah"
-        " paket data MAKSIMAL yang bisa dibeli jika ia tidak membeli makanan"
-        " sama sekali?**"
-    )
-    q1_b3 = st.radio(
-        "Pilih jawaban yang tepat:",
-        ["A. 4 paket data", "B. 2 paket data", "C. 1 paket data", "D. 0 paket data"],
-        index=None,
-        key="b3q1",
-    )
-
+    # KUIS BAB 3
     st.markdown("---")
-    st.markdown(
-        "**2. Apa makna ekonomi jika titik kombinasi pilihan konsumen berada DI"
-        " BAWAH garis anggaran?**"
-    )
-    q2_b3 = st.radio(
-        "Pilih jawaban yang tepat:",
-        [
-            "A. Uang konsumen tidak cukup untuk membeli kombinasi tersebut.",
-            (
-                "B. Kombinasi tersebut dapat dibeli, tetapi masih ada sisa uang"
-                " yang belum dimanfaatkan untuk menambah kepuasan."
-            ),
-            (
-                "C. Konsumen berada pada tingkat kepuasan tertinggi yang"
-                " paling efisien."
-            ),
-            "D. Harga barang di pasar mendadak naik drastis.",
-        ],
-        index=None,
-        key="b3q2",
-    )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    submit_b3 = st.form_submit_button("🎯 Periksa Jawaban Bab 3")
-
-  if submit_b3:
-    if q1_b3 is None or q2_b3 is None:
-      st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu!")
-    else:
-      skor_b3 = 0
-      if q1_b3.startswith("B"):
-        skor_b3 += 50
-      if q2_b3.startswith("B"):
-        skor_b3 += 50
-
-      if skor_b3 == 100:
-        st.balloons()
-        st.success(
-            f"🎉 **Skor Anda: {skor_b3} / 100** — Sempurna! Anda memahami"
-            " fungsi Garis Anggaran dan keterbatasan sumber daya!"
+    st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 3)")
+    with st.form("kuis_bab3"):
+        st.markdown("**1. Jika seorang mahasiswa memiliki uang Rp20.000, harga makanan Rp5.000/porsi, dan harga paket data Rp10.000/paket, berapakah jumlah paket data MAKSIMAL yang bisa dibeli jika ia tidak membeli makanan sama sekali?**")
+        q1_b3 = st.radio(
+            "Pilih jawaban yang tepat:",
+            [
+                "A. 4 paket data",
+                "B. 2 paket data",
+                "C. 1 paket data",
+                "D. 0 paket data"
+            ],
+            index=None, key="b3q1"
         )
-      else:
-        st.info(f"👍 **Skor Anda: {skor_b3} / 100** — Coba tinjau kembali simulasi di atas.")
+        st.markdown("---")
+        st.markdown("**2. Apa makna ekonomi jika titik kombinasi pilihan konsumen berada DI BAWAH garis anggaran?**")
+        q2_b3 = st.radio(
+            "Pilih jawaban yang tepat:",
+            [
+                "A. Uang konsumen tidak cukup untuk membeli kombinasi tersebut.",
+                "B. Kombinasi tersebut dapat dibeli, tetapi masih ada sisa uang yang belum dimanfaatkan untuk menambah kepuasan.",
+                "C. Konsumen berada pada tingkat kepuasan tertinggi yang paling efisien.",
+                "D. Harga barang di pasar mendadak naik drastis."
+            ],
+            index=None, key="b3q2"
+        )
+        st.markdown("<br>", unsafe_allow_html=True)
+        submit_b3 = st.form_submit_button("🎯 Periksa Jawaban Bab 3")
+
+    if submit_b3:
+        if q1_b3 is None or q2_b3 is None:
+            st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu!")
+        else:
+            skor_b3 = 0
+            if q1_b3.startswith("B"): skor_b3 += 50
+            if q2_b3.startswith("B"): skor_b3 += 50
+            
+            if skor_b3 == 100:
+                st.balloons()
+                st.success(f"🎉 **Skor Anda: {skor_b3} / 100** — Sempurna! Anda memahami fungsi Garis Anggaran dan keterbatasan sumber daya!")
+            else:
+                st.info(f"👍 **Skor Anda: {skor_b3} / 100** — Coba tinjau kembali simulasi di atas.")
