@@ -554,3 +554,246 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
                 st.success(f"🎉 **Skor Anda: {skor_b3} / 100** — Sempurna! Anda memahami fungsi Garis Anggaran dan keterbatasan sumber daya!")
             else:
                 st.info(f"👍 **Skor Anda: {skor_b3} / 100** — Coba tinjau kembali simulasi di atas.")
+# ==========================================
+# HALAMAN 5: BAB 4 (PILIHAN OPTIMAL KONSUMEN / KESEIMBANGAN)
+# ==========================================
+elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
+  st.title("🎯 BAB 4: KETIKA KONSUMEN MENEMUKAN PILIHAN TERBAIK")
+  st.caption(
+      "Modul Simulasi Keseimbangan Konsumen (Persinggungan IC & Budget Line,"
+      " MRS = Px/Py)"
+  )
+  st.markdown("---")
+
+  # ------------------------------------------
+  # 1. PENGANTAR KONSEPTUAL
+  # ------------------------------------------
+  st.subheader("💡 Menggabungkan Keinginan (IC) dan Kemampuan (BL)")
+  st.write("""
+    Pilihan optimal konsumen terjadi ketika **Kurva Indiferensi (keinginan)** bersinggungan secara presisi dengan **Garis Anggaran (kemampuan)**. 
+    Syarat matematis keseimbangan konsumen adalah:
+    $$MRS_{xy} = \\frac{P_x}{P_y}$$
+    """)
+
+  # ------------------------------------------
+  # 2. PARAMETER INPUT
+  # ------------------------------------------
+  st.sidebar.header("⚙️ Parameter Bab 4")
+  m_anggaran = st.sidebar.number_input(
+      "Pendapatan M (Rp):", min_value=5000, value=20000, step=2500
+  )
+  px_makanan = st.sidebar.number_input(
+      "Harga Makanan Px (Rp):", min_value=1000, value=5000, step=1000
+  )
+  py_data = st.sidebar.number_input(
+      "Harga Paket Data Py (Rp):", min_value=1000, value=10000, step=1000
+  )
+
+  # Hitung Intersep & Titik Optimal
+  max_x = m_anggaran / px_makanan  # 20.000 / 5.000 = 4
+  max_y = m_anggaran / py_data  # 20.000 / 10.000 = 2
+
+  # Titik Optimal Tangency (Cobb-Douglas alpha=0.5, beta=0.5)
+  opt_x = max_x / 2  # 2.0
+  opt_y = max_y / 2  # 1.0
+  u_optimal = np.sqrt(opt_x * opt_y)  # Utility level
+
+  st.markdown("---")
+  st.subheader("📊 Grafik Keseimbangan Konsumen (Titik Singgung Optimal)")
+
+  col_info1, col_info2, col_info3 = st.columns(3)
+  with col_info1:
+    st.metric(
+        "Kombinasi Optimal Makanan (X)",
+        f"{opt_x:.1f} Porsi",
+        f"Rp {opt_x * px_makanan:,.0f}",
+    )
+  with col_info2:
+    st.metric(
+        "Kombinasi Optimal Data (Y)",
+        f"{opt_y:.1f} Unit",
+        f"Rp {opt_y * py_data:,.0f}",
+    )
+  with col_info3:
+    st.metric(
+        "Kondisi MRS vs Rasio Harga",
+        f"{px_makanan/py_data:.2f}",
+        "MRS = Px / Py (Optimal)",
+    )
+
+  # ------------------------------------------
+  # 3. GRAFIK PLOTLY PERSINGBUNGAN IC DAN BL
+  # ------------------------------------------
+  x_vals = np.linspace(0.1, max_x * 1.2, 100)
+
+  # Budget Line: Y = (M - Px*X) / Py
+  y_bl = (m_anggaran - (px_makanan * x_vals)) / py_data
+
+  # IC Optimal (U_optimal): Y = (U_optimal^2) / X
+  y_ic_opt = (u_optimal**2) / x_vals
+
+  # IC Sub-optimal (U_rendah) & IC Non-terjangkau (U_tinggi)
+  y_ic_low = ((u_optimal * 0.7) ** 2) / x_vals
+  y_ic_high = ((u_optimal * 1.3) ** 2) / x_vals
+
+  fig_opt = go.Figure()
+
+  # Garis Anggaran (Budget Line)
+  fig_opt.add_trace(
+      go.Scatter(
+          x=x_vals,
+          y=y_bl,
+          mode="lines",
+          name="Garis Anggaran (BL)",
+          line=dict(color="#2196F3", width=3),
+      )
+  )
+
+  # IC Rendah (Di bawah)
+  fig_opt.add_trace(
+      go.Scatter(
+          x=x_vals,
+          y=y_ic_low,
+          mode="lines",
+          name="IC-1 (Sub-Optimal)",
+          line=dict(color="#BDBDBD", width=2, dash="dash"),
+      )
+  )
+
+  # IC Optimal (Bersinggungan)
+  fig_opt.add_trace(
+      go.Scatter(
+          x=x_vals,
+          y=y_ic_opt,
+          mode="lines",
+          name="IC-2 (Optimal / Bersinggungan)",
+          line=dict(color="#4CAF50", width=4),
+      )
+  )
+
+  # IC Tinggi (Tidak terjangkau)
+  fig_opt.add_trace(
+      go.Scatter(
+          x=x_vals,
+          y=y_ic_high,
+          mode="lines",
+          name="IC-3 (Angan-angan / Unattainable)",
+          line=dict(color="#E91E63", width=2, dash="dash"),
+      )
+  )
+
+  # Titik Singgung Optimal
+  fig_opt.add_trace(
+      go.Scatter(
+          x=[opt_x],
+          y=[opt_y],
+          mode="markers+text",
+          name="Titik Optimal (Equilibrium)",
+          text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f})"],
+          textposition="top right",
+          marker=dict(
+              size=14, color="#FF9800", line=dict(width=2, color="black")
+          ),
+      )
+  )
+
+  # Garis Proyeksi Putus-putus
+  fig_opt.add_trace(
+      go.Scatter(
+          x=[opt_x, opt_x],
+          y=[0, opt_y],
+          mode="lines",
+          showlegend=False,
+          line=dict(color="gray", width=1.5, dash="dot"),
+      )
+  )
+  fig_opt.add_trace(
+      go.Scatter(
+          x=[0, opt_x],
+          y=[opt_y, opt_y],
+          mode="lines",
+          showlegend=False,
+          line=dict(color="gray", width=1.5, dash="dot"),
+      )
+  )
+
+  fig_opt.update_layout(
+      title=(
+          "Keseimbangan Konsumen: Persinggungan Kurva Indiferensi dan Garis"
+          " Anggaran"
+      ),
+      xaxis_title="Makanan / Porsi (X)",
+      yaxis_title="Paket Data / Unit (Y)",
+      xaxis=dict(range=[0, max_x * 1.25]),
+      yaxis=dict(range=[0, max_y * 1.25]),
+      template="plotly_white",
+  )
+
+  st.plotly_chart(fig_opt, use_container_width=True)
+
+  # ------------------------------------------
+  # 4. KUIS EVALUASI BAB 4
+  # ------------------------------------------
+  st.markdown("---")
+  st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 4)")
+
+  with st.form("kuis_bab4"):
+    st.markdown(
+        "**1. Apakah syarat matematis utama terjadinya kondisi pilihan optimal"
+        " konsumen (keseimbangan konsumen)?**"
+    )
+    q1_b4 = st.radio(
+        "Pilih jawaban yang tepat:",
+        [
+            "A. MRS = Px / Py (Kemiringan Kurva Indiferensi sama dengan kemiringan Garis Anggaran).",
+            "B. Px = Py (Harga barang X harus sama dengan harga barang Y).",
+            "C. Pendapatan konsumen harus bernilai nol.",
+            "D. Konsumen membeli lebih banyak barang Y daripada barang X.",
+        ],
+        index=None,
+        key="b4q1",
+    )
+
+    st.markdown("---")
+    st.markdown(
+        "**2. Mengapa titik persinggungan antara Kurva Indiferensi dan Garis"
+        " Anggaran disebut sebagai pilihan paling optimal?**"
+    )
+    q2_b4 = st.radio(
+        "Pilih jawaban yang tepat:",
+        [
+            "A. Karena pada titik itu harga barang menjadi paling murah.",
+            (
+                "B. Karena konsumen memperoleh tingkat kepuasan tertinggi"
+                " yang masih dapat dicapai dengan seluruh anggaran yang"
+                " dimilikinya."
+            ),
+            "C. Karena konsumen tidak perlu membayar barang yang dibelinya.",
+            "D. Karena titik tersebut berada di luar batas anggaran.",
+        ],
+        index=None,
+        key="b4q2",
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    submit_b4 = st.form_submit_button("🎯 Periksa Jawaban Bab 4")
+
+  if submit_b4:
+    if q1_b4 is None or q2_b4 is None:
+      st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu!")
+    else:
+      skor_b4 = 0
+      if q1_b4.startswith("A"):
+        skor_b4 += 50
+      if q2_b4.startswith("A") or q2_b4.startswith("B"):
+        if q2_b4.startswith("B"):
+          skor_b4 += 50
+
+      if skor_b4 == 100:
+        st.balloons()
+        st.success(
+            f"🎉 **Skor Anda: {skor_b4} / 100** — Luar biasa! Anda telah"
+            " menguasai konsep Keseimbangan Konsumen dan Pilihan Optimal!"
+        )
+      else:
+        st.info(f"👍 **Skor Anda: {skor_b4} / 100** — Coba tinjau kembali grafik persinggungan di atas.")
