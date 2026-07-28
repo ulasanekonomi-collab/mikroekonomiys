@@ -133,22 +133,112 @@ fig = px.bar(
 fig.update_layout(showlegend=False)
 st.plotly_chart(fig, use_container_width=True)
 
-# Kolom Refleksi (Therapeutical Thinking Prompts)
+# ==========================================
+# EVALUASI & KUIS REFLEKTIF INTERAKTIF
+# ==========================================
 st.markdown("---")
-st.subheader("💡 Ruang Refleksi Mahasiswa (Therapeutical Thinking)")
+st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 1)")
+st.caption("Uji pemahaman intuitif Anda mengenai konsep Spesialisasi, Pasar, dan Kesejahteraan.")
 
-st.info(f"""
-**Coba pikirkan hasil simulasi di atas:**
-1. Tanpa pasar, kamu menghabiskan **{total_waktu_tanpa_pasar:.0f} jam** hanya untuk urusan makan satu piring nasi goreng. Apakah kamu masih punya waktu untuk belajar, bersosialisasi, atau melakukan hobi yang membuatmu bahagia?
-2. Dengan adanya mekanisme pasar dan keahlianmu sebagai **{profesi}**, kamu menyisakan waktu luang sebesar **{penghematan_waktu:.1f} jam**! Apa hal paling bermakna yang akan kamu lakukan dengan sisa waktu tersebut?
-3. Mengapa pasar dikatakan sebagai alat penyedia kebahagiaan (*happy*) bagi masyarakat?
-""")
+# Inisialisasi Form Kuis
+with st.form("kuis_bab1"):
+    
+    # Soal 1
+    st.markdown("**1. Mengapa memproduksi semua barang sendiri (tanpa pasar/autarki) cenderung membuat tingkat kesejahteraan (kebahagiaan) seseorang sangat rendah?**")
+    q1 = st.radio(
+        "Pilih jawaban yang paling tepat:",
+        [
+            "A. Karena waktu dan energi habis hanya untuk memenuhi kebutuhan dasar sederhana.",
+            "B. Karena tidak ada orang yang mau memuji hasil produksi sendiri.",
+            "C. Karena harga bahan baku di alam selalu lebih mahal daripada di pasar.",
+            "D. Karena pemerintah melarang masyarakat memproduksi barang sendiri."
+        ],
+        index=None,
+        key="q1"
+    )
+    
+    st.markdown("---")
+    
+    # Soal 2
+    st.markdown("**2. Berdasarkan hasil simulasi di atas, apa fungsi paling mendasar dari keberadaan pasar bagi kehidupan masyarakat modern?**")
+    q2 = st.radio(
+        "Pilih jawaban yang paling tepat:",
+        [
+            "A. Tempat berkumpulnya para pedagang untuk menaikkan harga barang sesuka hati.",
+            "B. Mekanisme koordinasi yang memungkinkan manusia melakukan spesialisasi dan bertukar hasil kerja.",
+            "C. Satu-satunya tempat bagi pemerintah untuk memungut pajak transaksi.",
+            "D. Alat untuk memaksa semua orang memiliki pekerjaan yang sama."
+        ],
+        index=None,
+        key="q2"
+    )
+    
+    st.markdown("---")
 
-refleksi_user = st.text_area("Tuliskan jawaban refleksi atau pendapatmu di sini:", placeholder="Menurut saya, mekanisme pasar membantu saya karena...")
+    # Soal 3
+    st.markdown("**3. Jika upah/nilai waktu seseorang meningkat, apakah yang terjadi pada efisiensi penggunaan pasar dalam memenuhi kebutuhan hidupnya?**")
+    q3 = st.radio(
+        "Pilih jawaban yang paling tepat:",
+        [
+            "A. Pasar menjadi tidak berguna karena uangnya sudah terlalu banyak.",
+            "B. Efisiensi pertukaran pasar makin tinggi karena waktu kerjanya untuk membeli suatu barang menjadi makin singkat.",
+            "C. Lebih baik ia kembali menanam padi sendiri agar hemat pengeluaran.",
+            "D. Kebutuhan barangnya di pasar otomatis berkurang secara drastis."
+        ],
+        index=None,
+        key="q3"
+    )
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    submit_kuis = st.form_submit_button("🎯 Periksa Jawaban Saya")
 
-if st.button("Simpan Refleksi Saya"):
-    if refleksi_user:
-        st.balloons()
-        st.success("Refleksi tersimpan! Kamu baru saja memahami esensi utama dari filosofi 'No Market, No Happy'.")
+# Logika Penilaian & Pembahasan
+if submit_kuis:
+    if q1 is None or q2 is None or q3 is None:
+        st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu sebelum memeriksa skor!")
     else:
-        st.warning("Tuliskan sedikit pendapatmu dulu sebelum menyimpan ya!")
+        skor = 0
+        
+        # Cek Soal 1 (Jawaban Benar: A)
+        ans1_correct = q1.startswith("A")
+        if ans1_correct: skor += 100/3
+        
+        # Cek Soal 2 (Jawaban Benar: B)
+        ans2_correct = q2.startswith("B")
+        if ans2_correct: skor += 100/3
+        
+        # Cek Soal 3 (Jawaban Benar: B)
+        ans3_correct = q3.startswith("B")
+        if ans3_correct: skor += 100/3
+        
+        # Tampilan Skor
+        st.markdown("---")
+        st.subheader("📊 Hasil Evaluasi Anda")
+        
+        if skor == 100:
+            st.balloons()
+            st.success(f"🎉 **Skor Anda: 100 / 100** — Luar biasa! Anda telah memahami filosofi utama 'No Market, No Happy' dengan sangat sempurna!")
+        elif skor >= 60:
+            st.info(f"👍 **Skor Anda: {skor:.0f} / 100** — Bagus! Pemahaman Anda tentang fungsi pasar sudah cukup matang.")
+        else:
+            st.error(f"💡 **Skor Anda: {skor:.0f} / 100** — Tetap semangat! Coba cermati kembali grafik simulasi di atas dan baca ulang pembahasannya.")
+            
+        # Detail Pembahasan
+        with st.expander("🔍 **Lihat Pembahasan Kuis**", expanded=True):
+            st.write("**Pembahasan Soal 1:**")
+            if ans1_correct:
+                st.markdown("✅ **Benar!** Tanpa pasar, waktu 100+ jam habis hanya untuk sepiring makanan dasar. Tidak ada sisa waktu untuk mengembangkan potensi diri atau menikmati hidup.")
+            else:
+                st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **A**. Keterbatasan waktu dan keahlian manusia membuat sistem tanpa pasar (*autarki*) sangat tidak efisien.")
+                
+            st.write("**Pembahasan Soal 2:**")
+            if ans2_correct:
+                st.markdown("✅ **Benar!** Pasar adalah institusi sosial tempat mempertemukan hasil spesialisasi kerja jutaan manusia agar saling melengkapi.")
+            else:
+                st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **B**. Pasar berfungsi sebagai alat koordinasi pertukaran hasil kerja secara masif.")
+                
+            st.write("**Pembahasan Soal 3:**")
+            if ans3_correct:
+                st.markdown("✅ **Benar!** Makin tinggi produktivitas/upah Anda per jam, makin singkat waktu kerja yang Anda butuhkan untuk membeli barang di pasar. Sisa waktu Anda untuk menikmati kebahagiaan (*happy*) makin melimpah.")
+            else:
+                st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **B**. Kenaikan produktivitas meningkatkan nilai daya beli waktu Anda terhadap barang pasar.")
