@@ -597,7 +597,7 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
             else:
                 st.info(f"👍 **Skor Anda: {skor_b3} / 100** — Coba tinjau kembali simulasi di atas.")
 # ==========================================
-# HALAMAN 5: BAB 4 (PILIHAN OPTIMAL KONSUMEN / KESEIMBANGAN)
+# HALAMAN: BAB 4 (PILIHAN OPTIMAL KONSUMEN)
 # ==========================================
 elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
   st.title("🎯 BAB 4: KETIKA KONSUMEN MENEMUKAN PILIHAN TERBAIK")
@@ -606,6 +606,39 @@ elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
       " MRS = Px/Py)"
   )
   st.markdown("---")
+
+  # ------------------------------------------
+  # 1. PENGANTAR KONSEPTUAL & PENURUNAN RUMUS
+  # ------------------------------------------
+  st.subheader("💡 Menggabungkan Keinginan (IC) dan Kemampuan (BL)")
+  st.write("""
+    Pilihan optimal konsumen terjadi ketika **Kurva Indiferensi (keinginan)** bersinggungan secara presisi dengan **Garis Anggaran (kemampuan)**. 
+    Kondisi matematis keseimbangan dicapai pada saat:
+    $$MRS_{xy} = \\frac{MU_x}{MU_y} = \\frac{P_x}{P_y}$$
+    """)
+
+  # Expander Penjelasan Matematis & Sifat Kurva
+  with st.expander("📐 Lihat Penurunan Matematis Fungsi Utilitas $U = XY$"):
+    st.latex(r"""
+        \begin{aligned}
+        \text{Fungsi Utilitas:} \quad & U(X,Y) = X \cdot Y \\
+        \text{Bentuk Kurva Indiferensi:} \quad & Y = \frac{U}{X} \quad \implies \frac{d^2Y}{dX^2} = \frac{2U}{X^3} > 0 \quad (\text{Konveks/Cembung}) \\
+        \text{Fungsi Lagrange:} \quad & \mathcal{L} = XY + \lambda (M - P_x X - P_y Y) \\
+        \text{FOC (\lambda):} \quad & \frac{\partial \mathcal{L}}{\partial X} = Y - \lambda P_x = 0 \implies \lambda = \frac{Y}{P_x} \\
+        & \frac{\partial \mathcal{L}}{\partial Y} = X - \lambda P_y = 0 \implies \lambda = \frac{X}{P_y} \\
+        \text{Syarat Equilibrium:} \quad & \frac{Y}{P_x} = \frac{X}{P_y} \implies P_x X = P_y Y \\
+        \text{Solusi Optimal:} \quad & X^* = \frac{M}{2 P_x} \quad \text{dan} \quad Y^* = \frac{M}{2 P_y}
+        \end{aligned}
+        """)
+    st.info(
+        "💡 **Sifat Penting:** Fungsi utilitas ini menunjukkan bahwa konsumen"
+        " yang rasional selalu mengalokasikan tepat **50% anggarannya** untuk"
+        " Makanan ($P_x X^*$) dan **50% sisanya** untuk Paket Data ($P_y Y^*$).Card"
+        " indikator di bawah secara otomatis menghitung nilai $X^*$ dan $Y^*$"
+        " ini."
+    )
+
+  # ... [Sisa parameter sidebar & grafik Plotly tetap sama] ...
 
   # ------------------------------------------
   # 1. PENGANTAR KONSEPTUAL
