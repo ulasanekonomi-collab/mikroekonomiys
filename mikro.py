@@ -2,89 +2,111 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 1. Konfigurasi Halaman Streamlit
+# Konfigurasi Halaman Streamlit
 st.set_page_config(
-    page_title="No Market, No Happy - Interactive Lab",
+    page_title="Laboratorium Ekonomi Mikro - No Market No Happy",
     page_icon="⚖️",
     layout="wide"
 )
 
 # ==========================================
-# SIDEBAR: NAVIGASI MENU BAB & IDENTITAS
+# SIDEBAR: IDENTITAS & NAVIGASI BAB
 # ==========================================
 with st.sidebar:
-    # Identitas Pengembang & Kampus
+    # 1. Identitas Pengembang & Kampus
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.image("logounisbatrans.jpg", use_container_width=True)
+        st.image("logounisba.png", use_container_width=True)
     with col2:
         st.image("yuka.png", use_container_width=True)
     
     st.caption("Dikembangkan oleh **Yuhka Sundaya**  \n*Ekonomi Pembangunan Unisba, 2026*")
     st.divider()
+
+    # 2. Menu Navigasi Modul / Bab (Dicadangkan Sampai Bab 20)
+    st.subheader("📚 Pilih Modul Pembelajaran")
     
-    # MENU NAVIGASI DASHBOARD
-    st.header("📚 Navigasi Modul Buku")
-    menu_pilihan = st.radio(
-        "Pilih Bab / Modul Belajar:",
-        [
-            "📖 Pengantar: Filosofi Pasar & Spesialisasi",
-            "📖 Bab 1: No Market, No Happy (Keputusan & Anggaran)",
-            "📖 Bab 2: Ekspresi Masyarakat Konsumen (Kurva Indiferensi)",
-            "📖 Bab 3: Garis Anggaran & Batas Pilihan (Coming Soon)"
-        ]
-    )
+    daftar_bab = [
+        "Pengantar: Filosofi No Market No Happy",
+        "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran",
+        "Bab 2: Ekspresi Masyarakat Konsumen",
+        "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran",
+        "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik",
+        "Bab 5: Ketika Pendapatan Berubah",
+        "Bab 6: [Cadangan Bab 6]",
+        "Bab 7: [Cadangan Bab 7]",
+        "Bab 8: [Cadangan Bab 8]",
+        "Bab 9: [Cadangan Bab 9]",
+        "Bab 10: [Cadangan Bab 10]",
+        "Bab 11: [Cadangan Bab 11]",
+        "Bab 12: [Cadangan Bab 12]",
+        "Bab 13: [Cadangan Bab 13]",
+        "Bab 14: [Cadangan Bab 14]",
+        "Bab 15: [Cadangan Bab 15]",
+        "Bab 16: [Cadangan Bab 16]",
+        "Bab 17: [Cadangan Bab 17]",
+        "Bab 18: [Cadangan Bab 18]",
+        "Bab 19: [Cadangan Bab 19]",
+        "Bab 20: [Cadangan Bab 20]",
+    ]
+    
+    pilihan_modul = st.selectbox("Navigasi Bab:", daftar_bab)
     st.divider()
 
-
 # ==========================================
-# MENU 1: PENGANTAR (FILOSOFI PASAR & SPESIALISASI)
+# HALAMAN 1: PENGANTAR (FILOSOFI NO MARKET NO HAPPY)
 # ==========================================
-if menu_pilihan == "📖 Pengantar: Filosofi Pasar & Spesialisasi":
-    st.title("⚖️ PENGANTAR: FILOSOFI PASAR & SPESIALISASI")
-    st.caption("Simulator Efisiensi Waktu: Autarki (Tanpa Pasar) vs Spesialisasi (Dengan Pasar)")
+if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
+    st.title("⚖️ PENGANTAR: NO MARKET, NO HAPPY LAB")
+    st.caption("Modul Simulasi Efisiensi Spesialisasi & Pertukaran Pasar")
     st.markdown("---")
-
-    # Input Parameter khusus Pengantar
-    st.sidebar.subheader("⚙️ Parameter Modul Pengantar")
+    
+    # Input Parameter Khusus Pengantar
+    st.sidebar.header("⚙️ Parameter Pengantar")
     profesi = st.sidebar.selectbox(
-        "Pilih Keahlian/Pekerjaan Anda:",
-        ["Pengetik / Asisten Riset", "Programmer / Pengembang Web", "Desainer Grafis", "Tutor Les", "Barista"]
+        "Keahlian/Pekerjaan di Pasar:",
+        ["Pengetik Dokumen / Asisten Riset", "Pengembang Web / Programmer", "Desainer Grafis", "Guru / Tutor Les", "Barista"]
     )
-    upah_per_jam = st.sidebar.number_input("Tarif Upah per Jam (Rp):", min_value=5000, value=25000, step=5000)
+    upah_per_jam = st.sidebar.number_input("Upah/Nilai Waktu per Jam (Rp):", min_value=5000, value=25000, step=5000)
     harga_nasgor_pasar = st.sidebar.number_input("Harga 1 Porsi Nasi Goreng (Rp):", min_value=5000, value=15000, step=1000)
 
     # Perhitungan
     waktu_tanam_padi = 60.0
     waktu_ternak_ayam = 25.0
     waktu_peras_minyak = 15.0
-    total_waktu_tanpa_pasar = 100.0
-    
+    total_waktu_tanpa_pasar = waktu_tanam_padi + waktu_ternak_ayam + waktu_peras_minyak # 100 Jam
+
     jam_kerja_pasar = (harga_nasgor_pasar / upah_per_jam) if upah_per_jam > 0 else 999
     total_upah_diterima = jam_kerja_pasar * upah_per_jam
 
-    # Emosi Dinamis
+    # Logic Mood
     if jam_kerja_pasar <= 0.5:
-        mood_emoji, mood_status, energi_persen, pesan_emosi = "🥳", "Sangat Happy & Bebas!", 0.95, "Sisa waktu penuh kebebasan untuk belajar & menikmati hidup."
+        mood_emoji, mood_status, energi_persen = "🥳", "Sangat Happy & Bebas!", 0.95
+        pesan_emosi = "Hanya butuh beberapa menit kerja! Sisa hari penuh waktu untuk belajar, bersosialisasi, dan menikmati hidup."
     elif jam_kerja_pasar <= 1.5:
-        mood_emoji, mood_status, energi_persen, pesan_emosi = "😁", "Happy & Sejahtera", 0.85, "Spesialisasi membuat beban kerja sangat efisien."
+        mood_emoji, mood_status, energi_persen = "😁", "Happy & Sejahtera", 0.85
+        pesan_emosi = "Spesialisasi membuat beban kerja sangat efisien."
     elif jam_kerja_pasar <= 4.0:
-        mood_emoji, mood_status, energi_persen, pesan_emosi = "🙂", "Cukup Happy / Lumayan", 0.65, "Jauh lebih rasional dibanding memproduksi semua sendiri."
+        mood_emoji, mood_status, energi_persen = "🙂", "Cukup Happy", 0.65
+        pesan_emosi = "Harus bekerja beberapa jam, tapi jauh lebih rasional dibanding memproduksi semua kebutuhan sendiri."
+    elif jam_kerja_pasar <= 8.0:
+        mood_emoji, mood_status, energi_persen = "😐", "Agak Lelah", 0.40
+        pesan_emosi = "Nilai upah per jam relatif kecil dibanding harga pasar."
     else:
-        mood_emoji, mood_status, energi_persen, pesan_emosi = "😫", "Sangat Lelah & Tertekan", 0.15, "Daya beli upah terlalu rendah."
+        mood_emoji, mood_status, energi_persen = "😫", "Sangat Lelah & Tertekan", 0.15
+        pesan_emosi = "Daya beli upah terlalu rendah."
 
-    # Tampilan Simulasi Pengantar
+    # Tampilan Layar Utama Pengantar
     col1, col2 = st.columns(2)
     with col1:
         st.error("❌ SKENARIO A: Tanpa Pasar (Autarki)")
         st.markdown("### 😫 **Kondisi Emosional: Super Lelah & Burnout**")
         st.progress(0.05)
-        st.caption("🔋 Sisa Energi Hidup: 5% (Terjebak Kerja Fisik Seharian)")
-        st.write("Untuk makan **1 porsi Nasi Goreng**, Anda harus:")
+        st.caption("🔋 Sisa Energi Hidup: 5% (Waktu Habis Hanya untuk Bertahan Hidup)")
         st.write(f"- Menanam padi & panen beras: **{waktu_tanam_padi:.0f} jam**")
         st.write(f"- Memelihara ayam sampai bertelur: **{waktu_ternak_ayam:.0f} jam**")
         st.write(f"- Memproses kelapa jadi minyak: **{waktu_peras_minyak:.0f} jam**")
-        st.metric("Total Waktu Kerja Dikorbankan", f"{total_waktu_tanpa_pasar:.1f} Jam", delta="Tidak Ada Waktu Bersantai", delta_color="inverse")
+        st.metric("Total Waktu Kerja Dikorbankan", f"{total_waktu_tanpa_pasar:.1f} Jam")
 
     with col2:
         st.success("✅ SKENARIO B: Dengan Pasar (Spesialisasi)")
@@ -92,80 +114,66 @@ if menu_pilihan == "📖 Pengantar: Filosofi Pasar & Spesialisasi":
         st.progress(energi_persen)
         st.caption(f"🔋 Sisa Energi Hidup: {int(energi_persen * 100)}% — {pesan_emosi}")
         st.write(f"Sebagai seorang **{profesi}** dengan upah **Rp{upah_per_jam:,.0f}/jam**:")
-        st.write(f"- Cukup bekerja selama **{jam_kerja_pasar * 60:.1f} menit** ({jam_kerja_pasar:.2f} jam).")
-        st.write(f"- Hasil upah (**Rp{total_upah_diterima:,.0f}**) digunakan membeli porsi nasi goreng di pasar.")
-        st.metric("Total Waktu Kerja Dikorbankan", f"{jam_kerja_pasar * 60:.1f} Menit" if jam_kerja_pasar < 1 else f"{jam_kerja_pasar:.2f} Jam", delta=f"Hemat {total_waktu_tanpa_pasar - jam_kerja_pasar:.1f} Jam")
-
+        st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar * 60:.1f} menit**." if jam_kerja_pasar < 1 else f"- Durasi kerja: **{jam_kerja_pasar:.2f} jam**.")
+        st.write(f"- Hasil upah (**Rp{total_upah_diterima:,.0f}**) digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+        st.metric("Total Waktu Kerja Dikorbankan", f"{jam_kerja_pasar * 60:.1f} Menit" if jam_kerja_pasar < 1 else f"{jam_kerja_pasar:.2f} Jam")
 
 # ==========================================
-# MENU 2: BAB 1 (NO MARKET, NO HAPPY - KEPUTUSAN & ANGGARAN)
+# HALAMAN 2: BAB 1 (PILIHAN KONSUMEN & SALDO 22.500)
 # ==========================================
-elif menu_pilihan == "📖 Bab 1: No Market, No Happy (Keputusan & Anggaran)":
-    st.title("🍜 BAB 1: NO MARKET, NO HAPPY")
-    st.caption("Simulator Keterbatasan Anggaran & Trade-off Mahasiswa di Kelas Jam 10 Pagi")
+elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
+    st.title("🍜 BAB 1: KEPUTUSAN KONSUMEN & KETERBATASAN ANGGARAN")
+    st.caption("Studi Kasus: Mahasiswa Kelas Pukul 10 Pagi dengan Saldo Rp22.500")
     st.markdown("---")
-
-    st.markdown("""
-    > *"Jam menunjukkan pukul 10 pagi. Kamu sedang duduk di kelas. Dosen menjelaskan materi, tapi perut mulai lapar. Di dompet tersisa saldo **Rp 22.500**. Apa keputusan ekonomimu?"*
-    """)
-
-    # Sidebar Parameter Bab 1
-    st.sidebar.subheader("⚙️ Parameter Dompet & Pilihan")
-    saldo = st.sidebar.number_input("Saldo Dompet / E-Wallet (Rp):", min_value=5000, value=22500, step=2500)[cite: 1]
     
-    st.subheader("🛒 Tentukan Kombinasi Pilihan Konsumsi Anda:")
+    st.sidebar.header("⚙️ Parameter Bab 1")
+    saldo_mahasiswa = st.sidebar.number_input("Saldo e-Wallet / Uang Saku (Rp):", value=22500, step=500)
     
-    col_a, col_b = st.columns(2)
-    with col_a:
-        porsi_makanan = st.slider("Jumlah Porsi Makanan (Mie Pedas / Ayam Geprek @ Rp15.000):", 0, 3, 1)[cite: 1]
-    with col_b:
-        paket_data = st.slider("Paket Data Internet (GB) (@ Rp7.500/GB):", 0, 5, 1)[cite: 1]
-
-    # Hitung Pengeluaran
-    total_belanja = (porsi_makanan * 15000) + (paket_data * 7500)
-    sisa_saldo = saldo - total_belanja
-
-    # Display Hasil Keputusan
-    st.markdown("---")
-    col_m1, col_m2, col_m3 = st.columns(3)
-    col_m1.metric("Total Saldo", f"Rp {saldo:,.0f}")[cite: 1]
-    col_m2.metric("Total Pengeluaran", f"Rp {total_belanja:,.0f}")
+    st.subheader("💡 Simulasi Keputusan Kombinasi Konsumsi")
+    st.write(f"Dengan saldo sebesar **Rp{saldo_mahasiswa:,.0f}**, kamu dihadapkan pada pilihan kebutuhan perut vs kebutuhan tugas kuliah:")
     
-    if sisa_saldo >= 0:
-        col_m3.metric("Sisa Saldo Dompet", f"Rp {sisa_saldo:,.0f}", delta="Anggaran Cukup")
-        st.success(f"🎉 **Keputusan Layak (Feasible)!** Anda mendapatkan {porsi_makanan} porsi makanan dan {paket_data} GB paket data. Perut kenyang, tugas kuliah tetap jalan!"[cite: 1])
-    else:
-        col_m3.metric("Defisit Anggaran", f"Rp {sisa_saldo:,.0f}", delta="Anggaran Tidak Cukup", delta_color="inverse")
-        st.error("⚠️ **Keputusan Tidak Layak!** Pilihan Anda melebihi saldo dompet Rp22.500. Silakan kurangi porsi makan atau paket data!"[cite: 1])
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("🍜 **Pilihan 1: Mie Pedas + Paket Data**")
+        st.write("- Mie Pedas: Rp15.000")
+        st.write("- Paket Data Kategori Kecil: Rp7.500")
+        st.write("**Total:** Rp22.500")
+        if saldo_mahasiswa >= 22500:
+            st.success("✅ **Terjangkau!** (Perut Kenyang + Tugas Kuliah Jalan)")
+        else:
+            st.error("❌ Saldo Tidak Cukup")
+            
+    with col2:
+        st.info("🍗 **Pilihan 2: Ayam Geprek + Es Teh**")
+        st.write("- Ayam Geprek + Nasi: Rp18.000")
+        st.write("- Es Teh Manis: Rp4.500")
+        st.write("**Total:** Rp22.500")
+        if saldo_mahasiswa >= 22500:
+            st.success("✅ **Terjangkau!** (Perut Sangat Kenyang, Tugas Buka Wi-Fi Kampus)")
+        else:
+            st.error("❌ Saldo Tidak Cukup")
 
-    # Kuis Reflektif Bab 1
-    st.markdown("---")
-    st.subheader("📝 Kuis Reflektif Bab 1")
-    with st.form("kuis_bab1"):
-        q1 = st.radio(
-            "Mengapa saat saldo Rp22.500 Anda tidak memilih ngopi di café modern?",[cite: 1]
-            [
-                "A. Karena tidak suka kopi.",
-                "B. Karena adanya keterbatasan anggaran (budget constraint) yang memaksa adanya trade-off.",[cite: 1]
-                "C. Karena café ditutup oleh pemerintah."
-            ]
-        )
-        if st.form_submit_button("Cek Jawaban"):
-            if q1.startswith("B"):
-                st.success("✅ **Benar!** Keterbatasan anggaran membuat kita harus membuat keputusan prioritas."[cite: 1])
-            else:
-                st.error("❌ **Kurang tepat.** Jawaban yang benar adalah B (Keterbatasan Anggaran)."[cite: 1])
-
+    with col3:
+        st.warning("☕ **Pilihan 3: Ngopi di Café Modern**")
+        st.write("- Kopi Latte: Rp35.000")
+        st.write("- Pastry: Rp20.000")
+        st.write("**Total:** Rp55.000")
+        if saldo_mahasiswa >= 55000:
+            st.success("✅ Terjangkau")
+        else:
+            st.error("❌ **Tidak Terjangkau!** (Mengharuskan Trade-Off / Menunda)")
 
 # ==========================================
-# MENU 3: BAB 2 (EKSPRESI MASYARAKAT KONSUMEN)
+# HALAMAN 3: BAB 2 (SIAP DIISI)
 # ==========================================
-elif menu_pilihan == "📖 Bab 2: Ekspresi Masyarakat Konsumen (Kurva Indiferensi)":
+elif pilihan_modul == "Bab 2: Ekspresi Masyarakat Konsumen":
     st.title("📈 BAB 2: EKSPRESI MASYARAKAT KONSUMEN")
-    st.caption("Modul Simulasi Kurva Indiferensi & Peta Kebahagiaan Konsumen")
-    st.markdown("---")
-    st.info("🚧 Modul Bab 2 siap dikembangkan! Kita akan membuat kurva melengkung (Indifference Curve) dan garis anggaran interaktif di sini.")
+    st.caption("Modul Kurva Indiferensi & Konsep Utility")
+    st.info("🚧 **Modul Bab 2 siap kita kembangkan!** Silakan input parameter atau konsep teori yang ingin disimulasikan.")
 
+# ==========================================
+# HALAMAN CADANGAN: BAB 3 SAMPAI BAB 20
+# ==========================================
 else:
-    st.title("🚧 MODUL DALAM PENGEMBANGAN")
-    st.write("Modul bab ini akan segera dibuka seiring berjalannya penulisan naskah buku.")
+    st.title(f"📦 {pilihan_modul}")
+    st.info(" Modul ini telah dicadangkan dalam struktur laboratorium dan siap diisi materi simulasi selanjutnya.")
