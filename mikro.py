@@ -16,7 +16,7 @@ with st.sidebar:
     # Mengatur layout 2 kolom untuk logo dan foto agar tampil sejajar & estetik
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.image("logounisbatrans.png", use_column_width=True)
+        st.image("logounisba.png", use_column_width=True)
     with col2:
         st.image("yuka.png", use_column_width=True)
     
