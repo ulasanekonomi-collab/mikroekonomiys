@@ -83,17 +83,51 @@ penghematan_waktu = total_waktu_tanpa_pasar - waktu_kerja_dengan_pasar
 persen_efisiensi = (penghematan_waktu / total_waktu_tanpa_pasar) * 100
 
 # ==========================================
+# HITUNG LOGIKA EMOSI DINAMIS (SCENARIO B)
+# ==========================================
+# Hitung berapa jam kerja yang dibutuhkan untuk beli nasi goreng
+jam_kerja_pasar = (harga_nasgor_pasar / upah_per_jam) if upah_per_jam > 0 else 999
+
+# Klasifikasi Emosi & Energi berdasarkan Waktu Kerja di Pasar
+if jam_kerja_pasar <= 0.5: # Kurang dari 30 menit kerja
+    mood_emoji = "🥳"
+    mood_status = "Sangat Bahagia & Santai!"
+    energi_persen = 0.95
+    pesan_emosi = "Hanya butuh beberapa menit kerja! Sisa hari penuh kebebasan dan waktu luang."
+elif jam_kerja_pasar <= 1.5: # 30 menit - 1.5 jam kerja
+    mood_emoji = "😁"
+    mood_status = "Bahagia & Puas"
+    energi_persen = 0.85
+    pesan_emosi = "Beban kerja sangat ringan. Masih punya banyak energi untuk hobi dan keluarga."
+elif jam_kerja_pasar <= 4.0: # 1.5 - 4 jam kerja
+    mood_emoji = "🙂"
+    mood_status = "Cukup / Lumayan"
+    energi_persen = 0.65
+    pesan_emosi = "Harus bekerja beberapa jam, tapi jauh lebih masuk akal dibanding bikin sendiri."
+elif jam_kerja_pasar <= 8.0: # 4 - 8 jam kerja
+    mood_emoji = "😐"
+    mood_status = "Agak Lelah"
+    energi_persen = 0.40
+    pesan_emosi = "Upah relatif rendah dibanding harga barang. Waktu luang mulai tergerus."
+else: # Bekerja > 8 jam hanya untuk 1 porsi nasi goreng
+    mood_emoji = "😫"
+    mood_status = "Sangat Lelah & Tertekan"
+    energi_persen = 0.15
+    pesan_emosi = "Daya beli upah terlalu rendah! Bekerja seharian hanya untuk sepiring makan."
+
+
+# ==========================================
 # LAYOUT TAMPILAN HASIL SIMULASI & EKSPRESI
 # ==========================================
 col1, col2 = st.columns(2)
 
 with col1:
-    st.error("❌ SKENARIO A: Tanpa Pasar (Semua Bikin Sendiri)")
+    st.error("❌ SKENARIO A: Tanpa Pasar (Autarki)")
     
-    # Visualisasi Ekspresi Lelah & Baterai Habis
+    # Visualisasi Static (Tanpa pasar selalu lelah ekstrem)
     st.markdown("### 😫 **Kondisi Emosional: Super Lelah & Burnout**")
-    st.progress(0.05) # Indikator energi tinggal 5%
-    st.caption("🔋 Sisa Energi Hidup: 5% (Kelelahan Fisik & Mental)")
+    st.progress(0.05)
+    st.caption("🔋 Sisa Energi Hidup: 5% (Terjebak Kerja Fisik Seharian)")
     
     st.write("Untuk makan **1 porsi Nasi Goreng Telur**, kamu harus:")
     st.write(f"- Menanam padi & panen beras: **{waktu_tanam_padi:.0f} jam**")
@@ -108,22 +142,26 @@ with col1:
     )
 
 with col2:
-    st.success("✅ SKENARIO B: Dengan Pasar (Spesialisasi & Bertukar)")
+    st.success("✅ SKENARIO B: Dengan Pasar (Spesialisasi)")
     
-    # Visualisasi Ekspresi Bahagia & Baterai Penuh
-    st.markdown("### 😁 **Kondisi Emosional: Very Happy & Relaxed!**")
-    st.progress(0.95) # Indikator energi 95%
-    st.caption("🔋 Sisa Energi Hidup: 95% (Siap Menikmati Hidup & Berkarya)")
+    # Visualisasi DINAMIS berdasarkan Nilai Waktu & Harga Pasar
+    st.markdown(f"### {mood_emoji} **Kondisi Emosional: {mood_status}**")
+    st.progress(energi_persen)
+    st.caption(f"🔋 Sisa Energi Hidup: {int(energi_persen * 100)}% — {pesan_emosi}")
     
     st.write(f"Sebagai seorang **{profesi}** dengan tarif **Rp{upah_per_jam:,}/jam**:")
-    st.write(f"- Cukup bekerja selama **{waktu_kerja_dengan_pasar * 60:.1f} menit**.")
-    st.write(f"- Pendapatanmu (Rp{harga_nasgor_pasar:,}) belikan Nasi Goreng di pasar.")
+    if jam_kerja_pasar < 1:
+        st.write(f"- Cukup bekerja selama **{jam_kerja_pasar * 60:.1f} menit**.")
+    else:
+        st.write(f"- Harus bekerja selama **{jam_kerja_pasar:.2f} jam**.")
+        
+    st.write(f"- Hasil upah (Rp{harga_nasgor_pasar:,}) dibelikan Nasi Goreng di pasar.")
     st.write("- Bebas dari tugas mencangkul sawah dan merawat ternak!")
     
     st.metric(
         label="Total Waktu Kerja yang Dikorbankan",
-        value=f"{waktu_kerja_dengan_pasar * 60:.1f} Menit",
-        delta=f"Hemat {penghematan_waktu:.1f} Jam ({persen_efisiensi:.1f}%)"
+        value=f"{jam_kerja_pasar * 60:.1f} Menit" if jam_kerja_pasar < 1 else f"{jam_kerja_pasar:.2f} Jam",
+        delta=f"Hemat {total_waktu_tanpa_pasar - jam_kerja_pasar:.1f} Jam"
     )
 
 st.markdown("---")
