@@ -83,80 +83,86 @@ penghematan_waktu = total_waktu_tanpa_pasar - waktu_kerja_dengan_pasar
 persen_efisiensi = (penghematan_waktu / total_waktu_tanpa_pasar) * 100
 
 # ==========================================
-# HITUNG LOGIKA EMOSI DINAMIS (SCENARIO B)
+# HITUNG LOGIKA EMOSI DINAMIS (BERDASARKAN PENGANTAR)
 # ==========================================
-# Hitung berapa jam kerja yang dibutuhkan untuk beli nasi goreng
+# Jam kerja yang dibutuhkan untuk membeli 1 porsi makanan di pasar
 jam_kerja_pasar = (harga_nasgor_pasar / upah_per_jam) if upah_per_jam > 0 else 999
 
-# Klasifikasi Emosi & Energi berdasarkan Waktu Kerja di Pasar
-if jam_kerja_pasar <= 0.5: # Kurang dari 30 menit kerja
+# Total pendapatan upah dari durasi kerja tersebut
+total_upah_diterima = jam_kerja_pasar * upah_per_jam
+
+# Klasifikasi Emosi & "Tingkat Happy" (Menyesuaikan Filosofi Pengantar)
+if jam_kerja_pasar <= 0.5: # < 30 menit kerja
     mood_emoji = "🥳"
-    mood_status = "Sangat Bahagia & Santai!"
+    mood_status = "Sangat Happy & Bebas!"
     energi_persen = 0.95
-    pesan_emosi = "Hanya butuh beberapa menit kerja! Sisa hari penuh kebebasan dan waktu luang."
+    pesan_emosi = "Hanya butuh beberapa menit kerja! Sisa hari penuh waktu untuk belajar, bersosialisasi, dan menikmati hidup."
 elif jam_kerja_pasar <= 1.5: # 30 menit - 1.5 jam kerja
     mood_emoji = "😁"
-    mood_status = "Bahagia & Puas"
+    mood_status = "Happy & Sejahtera"
     energi_persen = 0.85
-    pesan_emosi = "Beban kerja sangat ringan. Masih punya banyak energi untuk hobi dan keluarga."
+    pesan_emosi = "Spesialisasi membuat beban kerja sangat efisien. Kebutuhan dasar terpenuhi dengan mudah."
 elif jam_kerja_pasar <= 4.0: # 1.5 - 4 jam kerja
     mood_emoji = "🙂"
-    mood_status = "Cukup / Lumayan"
+    mood_status = "Cukup Happy / Lumayan"
     energi_persen = 0.65
-    pesan_emosi = "Harus bekerja beberapa jam, tapi jauh lebih masuk akal dibanding bikin sendiri."
+    pesan_emosi = "Harus bekerja beberapa jam, tapi jauh lebih rasional dibanding memproduksi semua kebutuhan sendiri."
 elif jam_kerja_pasar <= 8.0: # 4 - 8 jam kerja
     mood_emoji = "😐"
-    mood_status = "Agak Lelah"
+    mood_status = "Agak Lelah (Daya Beli Rendah)"
     energi_persen = 0.40
-    pesan_emosi = "Upah relatif rendah dibanding harga barang. Waktu luang mulai tergerus."
-else: # Bekerja > 8 jam hanya untuk 1 porsi nasi goreng
+    pesan_emosi = "Nilai upah per jam relatif kecil dibanding harga pasar. Waktu untuk menikmati hidup mulai tergerus."
+else: # Bekerja > 8 jam hanya untuk 1 porsi makan
     mood_emoji = "😫"
     mood_status = "Sangat Lelah & Tertekan"
     energi_persen = 0.15
-    pesan_emosi = "Daya beli upah terlalu rendah! Bekerja seharian hanya untuk sepiring makan."
+    pesan_emosi = "Keterbatasan daya beli membuat pertukaran pasar terasa berat, mendekati beban kerja autarki."
 
 
 # ==========================================
-# LAYOUT TAMPILAN HASIL SIMULASI & EKSPRESI
+# LAYOUT TAMPILAN SIMULASI (SESUAI NARASI PENGANTAR)
 # ==========================================
 col1, col2 = st.columns(2)
 
 with col1:
     st.error("❌ SKENARIO A: Tanpa Pasar (Autarki)")
     
-    # Visualisasi Static (Tanpa pasar selalu lelah ekstrem)
+    # Visualisasi Lelah Ekstrem (Hidup Tanpa Pasar)
     st.markdown("### 😫 **Kondisi Emosional: Super Lelah & Burnout**")
     st.progress(0.05)
-    st.caption("🔋 Sisa Energi Hidup: 5% (Terjebak Kerja Fisik Seharian)")
+    st.caption("🔋 Sisa Energi Hidup: 5% (Waktu Habis Hanya untuk Bertahan Hidup)")
     
-    st.write("Untuk makan **1 porsi Nasi Goreng Telur**, kamu harus:")
+    st.markdown("**Bayangkan 1 hari tanpa pasar. Untuk makan 1 porsi Nasi Goreng, Anda harus:**")
     st.write(f"- Menanam padi & panen beras: **{waktu_tanam_padi:.0f} jam**")
     st.write(f"- Memelihara ayam sampai bertelur: **{waktu_ternak_ayam:.0f} jam**")
     st.write(f"- Memproses kelapa jadi minyak: **{waktu_peras_minyak:.0f} jam**")
+    st.write("- Menyiapkan kayu bakar & alat masak sendiri: **Ekstrem lelah!**")
     
     st.metric(
         label="Total Waktu Kerja yang Dikorbankan",
         value=f"{total_waktu_tanpa_pasar:.1f} Jam",
-        delta="Tidak Ada Waktu Bersantai",
+        delta="Tidak Ada Waktu Menikmati Hidup",
         delta_color="inverse"
     )
 
 with col2:
     st.success("✅ SKENARIO B: Dengan Pasar (Spesialisasi)")
     
-    # Visualisasi DINAMIS berdasarkan Nilai Waktu & Harga Pasar
+    # Visualisasi Dinamis "Tingkat Happy"
     st.markdown(f"### {mood_emoji} **Kondisi Emosional: {mood_status}**")
     st.progress(energi_persen)
     st.caption(f"🔋 Sisa Energi Hidup: {int(energi_persen * 100)}% — {pesan_emosi}")
     
-    st.write(f"Sebagai seorang **{profesi}** dengan tarif **Rp{upah_per_jam:,}/jam**:")
+    st.markdown(f"**Dalam sistem terspesialisasi sebagai seorang {profesi}:**")
+    st.write(f"- Tarif upah kerja Anda: **Rp{upah_per_jam:,.0f} / jam**.")
+    
     if jam_kerja_pasar < 1:
-        st.write(f"- Cukup bekerja selama **{jam_kerja_pasar * 60:.1f} menit**.")
+        st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar * 60:.1f} menit**.")
     else:
-        st.write(f"- Harus bekerja selama **{jam_kerja_pasar:.2f} jam**.")
+        st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar:.2f} jam**.")
         
-    st.write(f"- Hasil upah (Rp{harga_nasgor_pasar:,}) dibelikan Nasi Goreng di pasar.")
-    st.write("- Bebas dari tugas mencangkul sawah dan merawat ternak!")
+    st.write(f"- Hasil upah yang diperoleh (**Rp{total_upah_diterima:,.0f}**) digunakan untuk membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+    st.write("- **Hasil:** Bebas dari keharusan menanam padi & ternak ayam sendiri!")
     
     st.metric(
         label="Total Waktu Kerja yang Dikorbankan",
