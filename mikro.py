@@ -406,8 +406,6 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
         """)
     st.markdown("---")
 
-    st.sidebar.header("⚙️ Parameter Bab 3")
-
   # ... [Sisa parameter sidebar & grafik Plotly tetap sama] ...
     
     # 📐 PANDUAN CARA MENGGAMBAR GARIS ANGGARAN
