@@ -11,7 +11,7 @@ st.set_page_config(
 
 # Header & Judul
 st.title("🍳 No Market, No Happy Lab")
-st.subtitle("Modul 1: Simulator Efisiensi Spesialisasi & Pertukaran Pasar")
+st.caption("Modul 1: Simulator Efisiensi Spesialisasi & Pertukaran Pasar")
 st.markdown("---")
 
 # Deskripsi Pengantar
