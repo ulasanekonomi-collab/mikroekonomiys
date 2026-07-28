@@ -70,7 +70,7 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
     upah_per_jam = st.sidebar.number_input("Upah/Nilai Waktu per Jam (Rp):", min_value=5000, value=25000, step=5000)
     harga_nasgor_pasar = st.sidebar.number_input("Harga 1 Porsi Nasi Goreng (Rp):", min_value=5000, value=15000, step=1000)
 
-    # Perhitungan
+    # Perhitungan Logika Simulasi
     waktu_tanam_padi = 60.0
     waktu_ternak_ayam = 25.0
     waktu_peras_minyak = 15.0
@@ -79,7 +79,7 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
     jam_kerja_pasar = (harga_nasgor_pasar / upah_per_jam) if upah_per_jam > 0 else 999
     total_upah_diterima = jam_kerja_pasar * upah_per_jam
 
-    # Logic Mood
+    # Klasifikasi Emosi & "Tingkat Happy" (Sesuai Filosofi Pengantar)
     if jam_kerja_pasar <= 0.5:
         mood_emoji, mood_status, energi_persen = "🥳", "Sangat Happy & Bebas!", 0.95
         pesan_emosi = "Hanya butuh beberapa menit kerja! Sisa hari penuh waktu untuk belajar, bersosialisasi, dan menikmati hidup."
@@ -106,6 +106,7 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
         st.write(f"- Menanam padi & panen beras: **{waktu_tanam_padi:.0f} jam**")
         st.write(f"- Memelihara ayam sampai bertelur: **{waktu_ternak_ayam:.0f} jam**")
         st.write(f"- Memproses kelapa jadi minyak: **{waktu_peras_minyak:.0f} jam**")
+        st.write("- Menyiapkan kayu bakar & alat masak sendiri: **Ekstrem lelah!**")
         st.metric("Total Waktu Kerja Dikorbankan", f"{total_waktu_tanpa_pasar:.1f} Jam")
 
     with col2:
@@ -115,8 +116,126 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
         st.caption(f"🔋 Sisa Energi Hidup: {int(energi_persen * 100)}% — {pesan_emosi}")
         st.write(f"Sebagai seorang **{profesi}** dengan upah **Rp{upah_per_jam:,.0f}/jam**:")
         st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar * 60:.1f} menit**." if jam_kerja_pasar < 1 else f"- Durasi kerja: **{jam_kerja_pasar:.2f} jam**.")
-        st.write(f"- Hasil upah (**Rp{total_upah_diterima:,.0f}**) digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+        st.write(f"- Hasil upah yang diperoleh (**Rp{total_upah_diterima:,.0f}**) digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+        st.write("- **Hasil:** Bebas dari keharusan menanam padi & ternak ayam sendiri!")
         st.metric("Total Waktu Kerja Dikorbankan", f"{jam_kerja_pasar * 60:.1f} Menit" if jam_kerja_pasar < 1 else f"{jam_kerja_pasar:.2f} Jam")
+
+    # Grafik Visualisasi Perbandingan
+    st.markdown("---")
+    st.subheader("📊 Grafik Perbandingan Alokasi Waktu Kerja (Jam)")
+    df_chart = pd.DataFrame({
+        'Skenario': ['Tanpa Pasar (Autarki)', 'Dengan Pasar (Spesialisasi)'],
+        'Waktu Kerja (Jam)': [total_waktu_tanpa_pasar, jam_kerja_pasar]
+    })
+    fig = px.bar(
+        df_chart, 
+        x='Skenario', 
+        y='Waktu Kerja (Jam)',
+        color='Skenario',
+        color_discrete_map={'Tanpa Pasar (Autarki)': '#FF4B4B', 'Dengan Pasar (Spesialisasi)': '#00C853'},
+        text_auto='.2f',
+        title="Berapa Jam Kerja yang Kamu Korbankan Hanya untuk Sepiring Nasi Goreng?"
+    )
+    fig.update_layout(showlegend=False)
+    st.plotly_chart(fig, use_container_width=True)
+
+    # ==========================================
+    # EVALUASI & KUIS REFLEKTIF PENGANTAR
+    # ==========================================
+    st.markdown("---")
+    st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Pengantar)")
+    st.caption("Uji pemahaman intuitif Anda mengenai konsep Spesialisasi, Pasar, dan Kesejahteraan.")
+
+    with st.form("kuis_pengantar"):
+        st.markdown("**1. Mengapa memproduksi semua barang sendiri (tanpa pasar/autarki) cenderung membuat tingkat kesejahteraan (kebahagiaan) seseorang sangat rendah?**")
+        q1 = st.radio(
+            "Pilih jawaban yang paling tepat:",
+            [
+                "A. Karena waktu dan energi habis hanya untuk memenuhi kebutuhan dasar sederhana.",
+                "B. Karena tidak ada orang yang mau memuji hasil produksi sendiri.",
+                "C. Karena harga bahan baku di alam selalu lebih mahal daripada di pasar.",
+                "D. Karena pemerintah melarang masyarakat memproduksi barang sendiri."
+            ],
+            index=None,
+            key="pq1"
+        )
+        
+        st.markdown("---")
+        
+        st.markdown("**2. Berdasarkan hasil simulasi di atas, apa fungsi paling mendasar dari keberadaan pasar bagi kehidupan masyarakat modern?**")
+        q2 = st.radio(
+            "Pilih jawaban yang paling tepat:",
+            [
+                "A. Tempat berkumpulnya para pedagang untuk menaikkan harga barang sesuka hati.",
+                "B. Mekanisme koordinasi yang memungkinkan manusia melakukan spesialisasi dan bertukar hasil kerja.",
+                "C. Satu-satunya tempat bagi pemerintah untuk memungut pajak transaksi.",
+                "D. Alat untuk memaksa semua orang memiliki pekerjaan yang sama."
+            ],
+            index=None,
+            key="pq2"
+        )
+        
+        st.markdown("---")
+
+        st.markdown("**3. Jika upah/nilai waktu seseorang meningkat, apakah yang terjadi pada efisiensi penggunaan pasar dalam memenuhi kebutuhan hidupnya?**")
+        q3 = st.radio(
+            "Pilih jawaban yang paling tepat:",
+            [
+                "A. Pasar menjadi tidak berguna karena uangnya sudah terlalu banyak.",
+                "B. Efisiensi pertukaran pasar makin tinggi karena waktu kerjanya untuk membeli suatu barang menjadi makin singkat.",
+                "C. Lebih baik ia kembali menanam padi sendiri agar hemat pengeluaran.",
+                "D. Kebutuhan barangnya di pasar otomatis berkurang secara drastis."
+            ],
+            index=None,
+            key="pq3"
+        )
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        submit_kuis = st.form_submit_button("🎯 Periksa Jawaban Saya")
+
+    if submit_kuis:
+        if q1 is None or q2 is None or q3 is None:
+            st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu sebelum memeriksa skor!")
+        else:
+            skor = 0
+            ans1_correct = q1.startswith("A")
+            if ans1_correct: skor += 100/3
+            
+            ans2_correct = q2.startswith("B")
+            if ans2_correct: skor += 100/3
+            
+            ans3_correct = q3.startswith("B")
+            if ans3_correct: skor += 100/3
+            
+            st.markdown("---")
+            st.subheader("📊 Hasil Evaluasi Anda")
+            
+            if skor == 100:
+                st.balloons()
+                st.success(f"🎉 **Skor Anda: 100 / 100** — Luar biasa! Anda telah memahami filosofi utama 'No Market, No Happy' dengan sangat sempurna!")
+            elif skor >= 60:
+                st.info(f"👍 **Skor Anda: {skor:.0f} / 100** — Bagus! Pemahaman Anda tentang fungsi pasar sudah cukup matang.")
+            else:
+                st.error(f"💡 **Skor Anda: {skor:.0f} / 100** — Tetap semangat! Coba cermati kembali grafik simulasi di atas dan baca ulang pembahasannya.")
+                
+            with st.expander("🔍 **Lihat Pembahasan Kuis**", expanded=True):
+                st.write("**Pembahasan Soal 1:**")
+                if ans1_correct:
+                    st.markdown("✅ **Benar!** Tanpa pasar, waktu 100+ jam habis hanya untuk sepiring makanan dasar. Tidak ada sisa waktu untuk mengembangkan potensi diri atau menikmati hidup.")
+                else:
+                    st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **A**. Keterbatasan waktu dan keahlian manusia membuat sistem tanpa pasar (*autarki*) sangat tidak efisien.")
+                    
+                st.write("**Pembahasan Soal 2:**")
+                if ans2_correct:
+                    st.markdown("✅ **Benar!** Pasar adalah institusi sosial tempat mempertemukan hasil spesialisasi kerja jutaan manusia agar saling melengkapi.")
+                else:
+                    st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **B**. Pasar berfungsi sebagai alat koordinasi pertukaran hasil kerja secara masif.")
+                    
+                st.write("**Pembahasan Soal 3:**")
+                if ans3_correct:
+                    st.markdown("✅ **Benar!** Makin tinggi produktivitas/upah Anda per jam, makin singkat waktu kerja yang Anda butuhkan untuk membeli barang di pasar. Sisa waktu Anda untuk menikmati kebahagiaan (*happy*) makin melimpah.")
+                else:
+                    st.markdown("❌ **Kurang Tepat.** Jawaban benar meupakan **B**. Kenaikan produktivitas meningkatkan nilai daya beli waktu Anda terhadap barang pasar.")
 
 # ==========================================
 # HALAMAN 2: BAB 1 (PILIHAN KONSUMEN & SALDO 22.500)
@@ -176,4 +295,4 @@ elif pilihan_modul == "Bab 2: Ekspresi Masyarakat Konsumen":
 # ==========================================
 else:
     st.title(f"📦 {pilihan_modul}")
-    st.info(" Modul ini telah dicadangkan dalam struktur laboratorium dan siap diisi materi simulasi selanjutnya.")
+    st.info("Modul ini telah dicadangkan dalam struktur laboratorium dan siap diisi materi simulasi selanjutnya.")
