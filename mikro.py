@@ -597,7 +597,7 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
             else:
                 st.info(f"👍 **Skor Anda: {skor_b3} / 100** — Coba tinjau kembali simulasi di atas.")
 # ==========================================
-# HALAMAN: BAB 4 (PILIHAN OPTIMAL KONSUMEN)
+# HALAMAN 5: BAB 4 (PILIHAN OPTIMAL KONSUMEN)
 # ==========================================
 elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
   st.title("🎯 BAB 4: KETIKA KONSUMEN MENEMUKAN PILIHAN TERBAIK")
