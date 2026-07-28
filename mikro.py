@@ -197,7 +197,7 @@ st.plotly_chart(fig, use_container_width=True)
 # EVALUASI & KUIS REFLEKTIF INTERAKTIF
 # ==========================================
 st.markdown("---")
-st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 1)")
+st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman")
 st.caption("Uji pemahaman intuitif Anda mengenai konsep Spesialisasi, Pasar, dan Kesejahteraan.")
 
 # Inisialisasi Form Kuis
