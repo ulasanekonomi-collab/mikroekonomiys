@@ -438,55 +438,60 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
           " menjadi 'angan-angan' karena melebihi anggaran yang dimiliki."
       )
 
-  # ------------------------------------------
-  # 3. GRAFIK PLOTLY GARIS ANGGARAN
-  # ------------------------------------------
-  x_vals = np.array([0, max_x])
-  y_vals = np.array([max_y, 0])
+# ------------------------------------------
+    # 3. GRAFIK PLOTLY GARIS ANGGARAN (DIPERBAIKI)
+    # ------------------------------------------
+    # Menghasilkan array titik untuk garis lurus sempurna: Y = (M - Px*X) / Py
+    x_line = np.linspace(0, max_x, 100)
+    y_line = (m_anggaran - (px_makanan * x_line)) / py_data
 
-  fig_bl = go.Figure()
+    fig_bl = go.Figure()
 
-  # Garis Anggaran (Budget Line)
-  fig_bl.add_trace(
-      go.Scatter(
-          x=x_vals,
-          y=y_vals,
-          mode="lines",
-          name="Garis Anggaran (Budget Line)",
-          line=dict(color="#2196F3", width=4),
-      )
-  )
+    # Garis Anggaran (Budget Line)
+    fig_bl.add_trace(
+        go.Scatter(
+            x=x_line,
+            y=y_line,
+            mode='lines',
+            name='Garis Anggaran (Budget Line)',
+            line=dict(color='#2196F3', width=4),
+        )
+    )
 
-  # Titik Pilihan Konsumen Saat Ini
-  fig_bl.add_trace(
-      go.Scatter(
-          x=[pilihan_x],
-          y=[pilihan_y],
-          mode="markers+text",
-          name="Pilihan Kombinasi Kamu",
-          text=[f"Pilihan ({pilihan_x}, {pilihan_y})"],
-          textposition="top right",
-          marker=dict(
-              size=14,
-              color=(
-                  "#4CAF50"
-                  if total_biaya <= m_anggaran
-                  else "#F44336"
-              ),
-          ),
-      )
-  )
+    # Titik Pilihan Kombinasi Konsumen
+    # Menentukan warna titik secara otomatis berdasarkan status anggaran
+    if total_biaya == m_anggaran:
+      warna_titik = '#4CAF50'  # Hijau (Efisien / On Budget)
+      status_titik = 'Tepat di Garis Anggaran'
+    elif total_biaya < m_anggaran:
+      warna_titik = '#FFC107'  # Kuning/Oranye (Under Budget)
+      status_titik = 'Di Bawah Garis (Sisa Saldo)'
+    else:
+      warna_titik = '#F44336'  # Merah (Over Budget)
+      status_titik = 'Di Atas Garis (Tidak Terjangkau)'
 
-  fig_bl.update_layout(
-      title=f"Garis Anggaran Konsumen (Pendapatan Rp {m_anggaran:,.0f})",
-      xaxis_title="Makanan / Porsi (X)",
-      yaxis_title="Paket Data / Unit (Y)",
-      xaxis=dict(range=[0, max_x * 1.3]),
-      yaxis=dict(range=[0, max_y * 1.3]),
-      template="plotly_white",
-  )
+    fig_bl.add_trace(
+        go.Scatter(
+            x=[pilihan_x],
+            y=[pilihan_y],
+            mode='markers+text',
+            name='Pilihan Kamu',
+            text=[f'Pilihan ({pilihan_x}, {pilihan_y}) - {status_titik}'],
+            textposition='top right',
+            marker=dict(size=14, color=warna_titik, line=dict(width=2, color='black')),
+        )
+    )
 
-  st.plotly_chart(fig_bl, use_container_width=True)
+    fig_bl.update_layout(
+        title=f'Garis Anggaran Konsumen (Pendapatan M = Rp {m_anggaran:,.0f})',
+        xaxis_title='Makanan / Porsi (X)',
+        yaxis_title='Paket Data / Unit (Y)',
+        xaxis=dict(range=[-0.2, max_x * 1.25]),
+        yaxis=dict(range=[-0.2, max_y * 1.25]),
+        template='plotly_white',
+    )
+
+    st.plotly_chart(fig_bl, use_container_width=True)
 
   # ------------------------------------------
   # 4. KUIS EVALUASI BAB 3
