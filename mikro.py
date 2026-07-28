@@ -82,30 +82,46 @@ waktu_kerja_dengan_pasar = harga_nasgor_pasar / upah_per_jam  # Dalam Jam
 penghematan_waktu = total_waktu_tanpa_pasar - waktu_kerja_dengan_pasar
 persen_efisiensi = (penghematan_waktu / total_waktu_tanpa_pasar) * 100
 
-# Layout Tampilan Hasil Simulasi
+# ==========================================
+# LAYOUT TAMPILAN HASIL SIMULASI & EKSPRESI
+# ==========================================
 col1, col2 = st.columns(2)
 
 with col1:
     st.error("❌ SKENARIO A: Tanpa Pasar (Semua Bikin Sendiri)")
-    st.write(f"Untuk makan **1 porsi Nasi Goreng Telur**, kamu harus:")
-    st.write(f"- Menanam padi & panen beras: **{waktu_tanam_padi} jam**")
-    st.write(f"- Memelihara ayam sampai bertelur: **{waktu_ternak_ayam} jam**")
-    st.write(f"- Memproses kelapa jadi minyak goreng: **{waktu_peras_minyak} jam**")
+    
+    # Visualisasi Ekspresi Lelah & Baterai Habis
+    st.markdown("### 😫 **Kondisi Emosional: Super Lelah & Burnout**")
+    st.progress(0.05) # Indikator energi tinggal 5%
+    st.caption("🔋 Sisa Energi Hidup: 5% (Kelelahan Fisik & Mental)")
+    
+    st.write("Untuk makan **1 porsi Nasi Goreng Telur**, kamu harus:")
+    st.write(f"- Menanam padi & panen beras: **{waktu_tanam_padi:.0f} jam**")
+    st.write(f"- Memelihara ayam sampai bertelur: **{waktu_ternak_ayam:.0f} jam**")
+    st.write(f"- Memproses kelapa jadi minyak: **{waktu_peras_minyak:.0f} jam**")
+    
     st.metric(
-        label="Total Waktu Kerja yang Dibutuhkan",
+        label="Total Waktu Kerja yang Dikorbankan",
         value=f"{total_waktu_tanpa_pasar:.1f} Jam",
-        delta="Lelah Luar Biasa",
+        delta="Tidak Ada Waktu Bersantai",
         delta_color="inverse"
     )
 
 with col2:
     st.success("✅ SKENARIO B: Dengan Pasar (Spesialisasi & Bertukar)")
+    
+    # Visualisasi Ekspresi Bahagia & Baterai Penuh
+    st.markdown("### 😁 **Kondisi Emosional: Very Happy & Relaxed!**")
+    st.progress(0.95) # Indikator energi 95%
+    st.caption("🔋 Sisa Energi Hidup: 95% (Siap Menikmati Hidup & Berkarya)")
+    
     st.write(f"Sebagai seorang **{profesi}** dengan tarif **Rp{upah_per_jam:,}/jam**:")
-    st.write(f"- Kamu cukup bekerja selama **{waktu_kerja_dengan_pasar * 60:.1f} menit**.")
-    st.write(f"- Hasil pendapatanmu (Rp{harga_nasgor_pasar:,}) kamu belikan Nasi Goreng di pasar.")
-    st.write("- Kamu tidak perlu mencangkul sawah atau memelihara ayam!")
+    st.write(f"- Cukup bekerja selama **{waktu_kerja_dengan_pasar * 60:.1f} menit**.")
+    st.write(f"- Pendapatanmu (Rp{harga_nasgor_pasar:,}) belikan Nasi Goreng di pasar.")
+    st.write("- Bebas dari tugas mencangkul sawah dan merawat ternak!")
+    
     st.metric(
-        label="Total Waktu Kerja yang Dibutuhkan",
+        label="Total Waktu Kerja yang Dikorbankan",
         value=f"{waktu_kerja_dengan_pasar * 60:.1f} Menit",
         delta=f"Hemat {penghematan_waktu:.1f} Jam ({persen_efisiensi:.1f}%)"
     )
