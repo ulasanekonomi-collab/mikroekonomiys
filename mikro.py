@@ -1,6 +1,7 @@
-import streamlit as st
+import numpy as np
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
+import streamlit as st
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(
@@ -340,16 +341,244 @@ elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
     st.plotly_chart(fig_bab1, use_container_width=True)
 
 # ==========================================
-# HALAMAN 3: BAB 2 (SIAP DIISI)
+# HALAMAN 3: BAB 2 (EKSPRESI MASYARAKAT KONSUMEN & KURVA INDIFERENSI)
 # ==========================================
 elif pilihan_modul == "Bab 2: Ekspresi Masyarakat Konsumen":
-    st.title("📈 BAB 2: EKSPRESI MASYARAKAT KONSUMEN")
-    st.caption("Modul Kurva Indiferensi & Konsep Utility")
-    st.info("🚧 **Modul Bab 2 siap kita kembangkan!** Silakan input parameter atau konsep teori yang ingin disimulasikan.")
+  st.title("📈 BAB 2: EKSPRESI MASYARAKAT KONSUMEN")
+  st.caption(
+      "Modul Simulasi Model Kebahagiaan, Kurva Indiferensi, dan Marginal Rate"
+      " of Substitution (MRS)"
+  )
+  st.markdown("---")
 
-# ==========================================
-# HALAMAN CADANGAN: BAB 3 SAMPAI BAB 20
-# ==========================================
-else:
-    st.title(f"📦 {pilihan_modul}")
-    st.info("Modul ini telah dicadangkan dalam struktur laboratorium dan siap diisi materi simulasi selanjutnya.")
+  # ------------------------------------------
+  # 1. PENGANTAR NARASI & KONSEPTUAL
+  # ------------------------------------------
+  st.subheader("🏬 Dari Ratusan Juta Orang Menjadi Model Sederhana")
+  st.write("""
+    Bayangkan ada lebih dari **280 juta penduduk Indonesia** yang setiap hari membuat keputusan konsumsi. 
+    Ekonom tidak mungkin mewawancarai mereka satu per satu. Karena itu, digunakan **model ekonomi**—seperti belajar naik sepeda di halaman rumah sebelum ke jalan raya. 
+    Kita fokus pada satu hal utama: **bagaimana konsumen mengekspresikan pilihan dan kepuasannya (utility)** melalui kombinasi barang dan jasa.
+    """)
+
+  # ------------------------------------------
+  # 2. SIMULATOR KURVA INDIFERENSI & PETA KEBAHAGIAAN
+  # ------------------------------------------
+  st.markdown("---")
+  st.subheader("🗺️ Kurva Indiferensi: Peta Kebahagiaan Konsumen")
+  st.write(
+      "Kurva Indiferensi (*Indifference Curve*) menunjukkan berbagai kombinasi"
+      " dua barang (misal: Makanan dan Paket Data) yang memberikan **tingkat"
+      " kepuasan yang sama** bagi konsumen."
+  )
+
+  # Sidebar Parameter Khusus Bab 2
+  st.sidebar.header("⚙️ Parameter Bab 2")
+  tingkat_utility = st.sidebar.slider(
+      "Tingkat Kepuasan (Target Utility U):",
+      min_value=10,
+      max_value=30,
+      value=20,
+      step=5,
+  )
+
+  # Logika Matematis Sederhana Fungsi Utilitas Cobb-Douglas: U = X^0.5 * Y^0.5 -> Y = (U^2) / X
+  x_makanan = np.linspace(1, 10, 100)
+  y_data_u1 = (tingkat_utility**2) / (x_makanan * 10)
+
+  # Kurva Lebih Tinggi & Lebih Rendah untuk Menunjukkan Peta Kebahagiaan
+  y_data_u_low = ((tingkat_utility - 5) ** 2) / (x_makanan * 10)
+  y_data_u_high = ((tingkat_utility + 5) ** 2) / (x_makanan * 10)
+
+  # Layout Kolom Tampilan
+  col_grafik, col_penjelasan = st.columns([7, 5])
+
+  with col_grafik:
+    fig_ic = go.Figure()
+
+    # Kurva Indiferensi Aktif
+    fig_ic.add_trace(
+        go.Scatter(
+            x=x_makanan,
+            y=y_data_u1,
+            mode="lines",
+            name=f"Kurva Kepuasan Saat Ini (U = {tingkat_utility})",
+            line=dict(color="#FF9800", width=4),
+        )
+    )
+
+    # Kurva Peta Kebahagiaan (Map)
+    fig_ic.add_trace(
+        go.Scatter(
+            x=x_makanan,
+            y=y_data_u_low,
+            mode="lines",
+            name="Kepuasan Lebih Rendah",
+            line=dict(color="#BDBDBD", width=2, dash="dash"),
+        )
+    )
+
+    fig_ic.add_trace(
+        go.Scatter(
+            x=x_makanan,
+            y=y_data_u_high,
+            mode="lines",
+            name="Kepuasan Lebih Tinggi 🥳",
+            line=dict(color="#4CAF50", width=2, dash="dash"),
+        )
+    )
+
+    # Menambahkan Titik Kombinasi Kasus Buku (Contoh)
+    fig_ic.add_trace(
+        go.Scatter(
+            x=[2, 4, 8],
+            y=[
+                (tingkat_utility**2) / (2 * 10),
+                (tingkat_utility**2) / (4 * 10),
+                (tingkat_utility**2) / (8 * 10),
+            ],
+            mode="markers+text",
+            name="Pilihan Kombinasi (A, B, C)",
+            text=["Kombinasi A", "Kombinasi B", "Kombinasi C"],
+            textposition="top right",
+            marker=dict(size=10, color="#E91E63"),
+        )
+    )
+
+    fig_ic.update_layout(
+        title="Kurva Indiferensi (Pilihan Makanan vs Paket Data)",
+        xaxis_title="Makanan / Porsi (X)",
+        yaxis_title="Paket Data / GB (Y)",
+        legend=dict(
+            orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+        ),
+        template="plotly_white",
+    )
+
+    st.plotly_chart(fig_ic, use_container_width=True)
+
+  with col_penjelasan:
+    st.info("💡 **Karakteristik Kurva Indiferensi:**")
+    st.markdown("""
+        1. **Melengkung ke Bawah (Convex to Origin):** Menggambarkan hukum **Marginal Rate of Substitution (MRS)**—semakin banyak suatu barang dimiliki, semakin kecil kesediaan menukarnya dengan barang lain.
+        2. **Semakin Tinggi Kurva = Semakin Happy:** Bergerak ke kanan atas (kurva hijau) artinya konsumsi barang lebih banyak, sehingga manfaat/utility meningkat.
+        3. **Nilainya "Sama Saja" (Indifferent):** Semua titik sepanjang garis oranye memberikan tingkat kepuasan yang identik.
+        """)
+
+    st.metric(
+        label="Tingkat Kepuasan Konsumen Saat Ini",
+        value=f"Indeks Utility: {tingkat_utility}",
+        delta=(
+            "Geser slider di sidebar untuk melihat Peta Kebahagiaan bertambah"
+        ),
+    )
+
+  # ------------------------------------------
+  # 3. KUIS EVALUASI REFLEKTIF BAB 2
+  # ------------------------------------------
+  st.markdown("---")
+  st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 2)")
+  st.caption(
+      "Uji pemahaman Anda mengenai Kurva Indiferensi, Utilitas, dan MRS."
+  )
+
+  with st.form("kuis_bab2"):
+    st.markdown(
+        "**1. Apa arti kata 'Indifference' dalam konsep Kurva Indiferensi"
+        " dalam teori konsumen?**"
+    )
+    q1_b2 = st.radio(
+        "Pilih jawaban yang tepat:",
+        [
+            "A. Konsumen tidak mampu membeli barang-barang di dalam kurva.",
+            (
+                "B. Konsumen merasa tidak peduli/sama saja karena semua"
+                " kombinasi pada kurva memberikan tingkat kepuasan yang sama."
+            ),
+            "C. Kurva yang menunjukkan ketidakpuasan konsumen atas barang pasar.",
+            (
+                "D. Perbedaan harga barang yang sangat drastis sehingga tidak"
+                " terjangkau."
+            ),
+        ],
+        index=None,
+        key="b2q1",
+    )
+
+    st.markdown("---")
+
+    st.markdown(
+        "**2. Mengapa Kurva Indiferensi berbentuk melengkung (cembung ke arah"
+        " titik nol/convex) dan tidak berbentuk garis lurus?**"
+    )
+    q2_b2 = st.radio(
+        "Pilih jawaban yang tepat:",
+        [
+            "A. Karena harga barang selalu berubah-ubah di pasar.",
+            (
+                "B. Karena adanya prinsip MRS (Marginal Rate of"
+                " Substitution)—semakin banyak kita memiliki suatu barang,"
+                " semakin kecil keinginan menukarnya."
+            ),
+            (
+                "C. Karena pemerintah membatasi jumlah pembelian paket data dan"
+                " makanan."
+            ),
+            "D. Karena pendapatan konsumen tidak mencukupi."
+        ],
+        index=None,
+        key="b2q2",
+    )
+
+    st.markdown("---")
+
+    st.markdown(
+        "**3. Mengapa konsumen selalu lebih menyukai Kurva Indiferensi yang"
+        " posisinya lebih tinggi (lebih ke kanan atas)?**"
+    )
+    q3_b2 = st.radio(
+        "Pilih jawaban yang tepat:",
+        [
+            (
+                "A. Karena posisi kurva yang lebih tinggi menggambarkan"
+                " kombinasi barang yang lebih banyak sehingga memberikan"
+                " manfaat/kepuasan lebih tinggi."
+            ),
+            "B. Karena kurva yang lebih tinggi harganya pasti gratis.",
+            "C. Karena kurva yang lebih rendah dilarang oleh teori ekonomi.",
+            "D. Karena titik tersebut tidak membutuhkan pengorbanan sama sekali."
+        ],
+        index=None,
+        key="b2q3",
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    submit_b2 = st.form_submit_button("🎯 Periksa Jawaban Bab 2")
+
+  if submit_b2:
+    if q1_b2 is None or q2_b2 is None or q3_b2 is None:
+      st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu!")
+    else:
+      skor_b2 = 0
+      if q1_b2.startswith("B"):
+        skor_b2 += 100 / 3
+      if q2_b2.startswith("B"):
+        skor_b2 += 100 / 3
+      if q3_b2.startswith("A"):
+        skor_b2 += 100 / 3
+
+      st.markdown("---")
+      st.subheader("📊 Hasil Evaluasi Bab 2")
+
+      if skor_b2 == 100:
+        st.balloons()
+        st.success(
+            f"🎉 **Skor Anda: {skor_b2:.0f} / 100** — Sempurna! Anda sudah"
+            " memahami konsep Peta Kebahagiaan dan Kurva Indiferensi dengan"
+            " sangat baik!"
+        )
+      else:
+        st.info(
+            f"💡 **Skor Anda: {skor_b2:.0f} / 100** — Hasil yang bagus! Coba"
+            " tinjau kembali grafik di atas untuk memperdalam pemahaman."
+        )
