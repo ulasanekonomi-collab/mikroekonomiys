@@ -1,7 +1,8 @@
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(
@@ -80,7 +81,7 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
     jam_kerja_pasar = (harga_nasgor_pasar / upah_per_jam) if upah_per_jam > 0 else 999
     total_upah_diterima = jam_kerja_pasar * upah_per_jam
 
-    # Klasifikasi Emosi & "Tingkat Happy" (Sesuai Filosofi Pengantar)
+    # Klasifikasi Emosi & "Tingkat Happy"
     if jam_kerja_pasar <= 0.5:
         mood_emoji, mood_status, energi_persen = "🥳", "Sangat Happy & Bebas!", 0.95
         pesan_emosi = "Hanya butuh beberapa menit kerja! Sisa hari penuh waktu untuk belajar, bersosialisasi, dan menikmati hidup."
@@ -117,7 +118,7 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
         st.caption(f"🔋 Sisa Energi Hidup: {int(energi_persen * 100)}% — {pesan_emosi}")
         st.write(f"Sebagai seorang **{profesi}** dengan upah **Rp{upah_per_jam:,.0f}/jam**:")
         st.write(f"- Durasi kerja yang dibutuhkan: **{jam_kerja_pasar * 60:.1f} menit**." if jam_kerja_pasar < 1 else f"- Durasi kerja: **{jam_kerja_pasar:.2f} jam**.")
-        st.write(f"- Uang upah digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
+        st.write(f"- Hasil upah yang diperoleh (**Rp{total_upah_diterima:,.0f}**) digunakan membeli makanan di pasar (Rp{harga_nasgor_pasar:,.0f}).")
         st.write("- **Hasil:** Bebas dari keharusan menanam padi & ternak ayam sendiri!")
         st.metric("Total Waktu Kerja Dikorbankan", f"{jam_kerja_pasar * 60:.1f} Menit" if jam_kerja_pasar < 1 else f"{jam_kerja_pasar:.2f} Jam")
 
@@ -140,115 +141,73 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
     fig.update_layout(showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
 
-    # ==========================================
-    # EVALUASI & KUIS REFLEKTIF PENGANTAR
-    # ==========================================
+    # KUIS EVALUASI PENGANTAR
     st.markdown("---")
     st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Pengantar)")
     st.caption("Uji pemahaman intuitif Anda mengenai konsep Spesialisasi, Pasar, dan Kesejahteraan.")
 
     with st.form("kuis_pengantar"):
-        st.markdown("**1. Mengapa memproduksi semua barang sendiri (tanpa pasar/autarki) cenderung membuat tingkat kesejahteraan (kebahagiaan) seseorang sangat rendah?**")
+        st.markdown("**1. Mengapa memproduksi semua barang sendiri (tanpa pasar/autarki) cenderung membuat tingkat kesejahteraan seseorang sangat rendah?**")
         q1 = st.radio(
-            "Pilih jawaban yang paling tepat:",
+            "Pilih jawaban yang tepat:",
             [
                 "A. Karena waktu dan energi habis hanya untuk memenuhi kebutuhan dasar sederhana.",
                 "B. Karena tidak ada orang yang mau memuji hasil produksi sendiri.",
                 "C. Karena harga bahan baku di alam selalu lebih mahal daripada di pasar.",
                 "D. Karena pemerintah melarang masyarakat memproduksi barang sendiri."
             ],
-            index=None,
-            key="pq1"
+            index=None, key="pq1"
         )
-        
         st.markdown("---")
-        
-        st.markdown("**2. Berdasarkan hasil simulasi di atas, apa fungsi paling mendasar dari keberadaan pasar bagi kehidupan masyarakat modern?**")
+        st.markdown("**2. Berdasarkan hasil simulasi di atas, apa fungsi paling mendasar dari keberadaan pasar?**")
         q2 = st.radio(
-            "Pilih jawaban yang paling tepat:",
+            "Pilih jawaban yang tepat:",
             [
                 "A. Tempat berkumpulnya para pedagang untuk menaikkan harga barang sesuka hati.",
                 "B. Mekanisme koordinasi yang memungkinkan manusia melakukan spesialisasi dan bertukar hasil kerja.",
                 "C. Satu-satunya tempat bagi pemerintah untuk memungut pajak transaksi.",
                 "D. Alat untuk memaksa semua orang memiliki pekerjaan yang sama."
             ],
-            index=None,
-            key="pq2"
+            index=None, key="pq2"
         )
-        
         st.markdown("---")
-
-        st.markdown("**3. Jika upah/nilai waktu seseorang meningkat, apakah yang terjadi pada efisiensi penggunaan pasar dalam memenuhi kebutuhan hidupnya?**")
+        st.markdown("**3. Jika upah/nilai waktu seseorang meningkat, apakah yang terjadi pada efisiensi penggunaan pasar?**")
         q3 = st.radio(
-            "Pilih jawaban yang paling tepat:",
+            "Pilih jawaban yang tepat:",
             [
                 "A. Pasar menjadi tidak berguna karena uangnya sudah terlalu banyak.",
                 "B. Efisiensi pertukaran pasar makin tinggi karena waktu kerjanya untuk membeli suatu barang menjadi makin singkat.",
                 "C. Lebih baik ia kembali menanam padi sendiri agar hemat pengeluaran.",
                 "D. Kebutuhan barangnya di pasar otomatis berkurang secara drastis."
             ],
-            index=None,
-            key="pq3"
+            index=None, key="pq3"
         )
-        
         st.markdown("<br>", unsafe_allow_html=True)
         submit_kuis = st.form_submit_button("🎯 Periksa Jawaban Saya")
 
     if submit_kuis:
         if q1 is None or q2 is None or q3 is None:
-            st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu sebelum memeriksa skor!")
+            st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu!")
         else:
             skor = 0
-            ans1_correct = q1.startswith("A")
-            if ans1_correct: skor += 100/3
-            
-            ans2_correct = q2.startswith("B")
-            if ans2_correct: skor += 100/3
-            
-            ans3_correct = q3.startswith("B")
-            if ans3_correct: skor += 100/3
-            
-            st.markdown("---")
-            st.subheader("📊 Hasil Evaluasi Anda")
+            if q1.startswith("A"): skor += 100/3
+            if q2.startswith("B"): skor += 100/3
+            if q3.startswith("B"): skor += 100/3
             
             if skor == 100:
                 st.balloons()
-                st.success(f"🎉 **Skor Anda: 100 / 100** — Luar biasa! Anda telah memahami filosofi utama 'No Market, No Happy' dengan sangat sempurna!")
-            elif skor >= 60:
-                st.info(f"👍 **Skor Anda: {skor:.0f} / 100** — Bagus! Pemahaman Anda tentang fungsi pasar sudah cukup matang.")
+                st.success("🎉 **Skor Anda: 100 / 100** — Luar biasa! Pemahaman Anda sangat sempurna!")
             else:
-                st.error(f"💡 **Skor Anda: {skor:.0f} / 100** — Tetap semangat! Coba cermati kembali grafik simulasi di atas dan baca ulang pembahasannya.")
-                
-            with st.expander("🔍 **Lihat Pembahasan Kuis**", expanded=True):
-                st.write("**Pembahasan Soal 1:**")
-                if ans1_correct:
-                    st.markdown("✅ **Benar!** Tanpa pasar, waktu 100+ jam habis hanya untuk sepiring makanan dasar. Tidak ada sisa waktu untuk mengembangkan potensi diri atau menikmati hidup.")
-                else:
-                    st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **A**. Keterbatasan waktu dan keahlian manusia membuat sistem tanpa pasar (*autarki*) sangat tidak efisien.")
-                    
-                st.write("**Pembahasan Soal 2:**")
-                if ans2_correct:
-                    st.markdown("✅ **Benar!** Pasar adalah institusi sosial tempat mempertemukan hasil spesialisasi kerja jutaan manusia agar saling melengkapi.")
-                else:
-                    st.markdown("❌ **Kurang Tepat.** Jawaban benar adalah **B**. Pasar berfungsi sebagai alat koordinasi pertukaran hasil kerja secara masif.")
-                    
-                st.write("**Pembahasan Soal 3:**")
-                if ans3_correct:
-                    st.markdown("✅ **Benar!** Makin tinggi produktivitas/upah Anda per jam, makin singkat waktu kerja yang Anda butuhkan untuk membeli barang di pasar. Sisa waktu Anda untuk menikmati kebahagiaan (*happy*) makin melimpah.")
-                else:
-                    st.markdown("❌ **Kurang Tepat.** Jawaban benar meupakan **B**. Kenaikan produktivitas meningkatkan nilai daya beli waktu Anda terhadap barang pasar.")
+                st.info(f"👍 **Skor Anda: {skor:.0f} / 100** — Tetap semangat dan tinjau kembali pembahasannya!")
 
 # ==========================================
-# HALAMAN 2: BAB 1 (PILIHAN KONSUMEN & SALDO 22.500)
+# HALAMAN 2: BAB 1 (PILIHAN KONSUMEN & KETERBATASAN ANGGARAN)
 # ==========================================
 elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
     st.title("🍜 BAB 1: KEPUTUSAN KONSUMEN & KETERBATASAN ANGGARAN")
     st.caption("Modul Simulasi Sirkulasi Pasar, Anggaran Rp22.500, dan Ekspresi Kepuasan Konsumen")
     st.markdown("---")
     
-    # ------------------------------------------
-    # 1. ILUSTRASI ILMU PASAR (UANG, BARANG, KEBUTUHAN)
-    # ------------------------------------------
     st.subheader("🔄 Ilustrasi Arus Melingkar Pasar (Circular Flow of Market)")
     st.write("Pasar mempertemukan 3 elemen utama dalam keputusan ekonomi harianmu:")
     
@@ -262,15 +221,11 @@ elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
         
     st.markdown("---")
 
-    # ------------------------------------------
-    # 2. SIMULATOR ALOKASI ANGGARAN & EKSPRESI KONSUMEN
-    # ------------------------------------------
     st.subheader("📊 Simulator Alokasi Anggaran & Ekspresi Kebahagiaan")
     
     st.sidebar.header("⚙️ Parameter Bab 1")
     saldo_mahasiswa = st.sidebar.number_input("Saldo e-Wallet (Rp):", min_value=5000, value=22500, step=1000)
     
-    # Input Alokasi oleh Mahasiswa
     st.write("Atur alokasi pembagian uang sakumu untuk **Makanan** dan **Paket Data**:")
     
     col_input1, col_input2 = st.columns(2)
@@ -282,7 +237,6 @@ elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
     total_pengeluaran = biaya_makan + biaya_data
     sisa_saldo = saldo_mahasiswa - total_pengeluaran
 
-    # Logika Ekspresi Konsumen berdasarkan Keputusan
     if total_pengeluaran > saldo_mahasiswa:
         ekspresi_emoji = "😫"
         status_kepuasan = "Overbudget! Defisit / Saldo Tidak Cukup"
@@ -306,10 +260,9 @@ elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
     else:
         ekspresi_emoji = "😐"
         status_kepuasan = "Kurang Kepuasan (Masih Ada Sisa Saldo)"
-        penjelasan_ekspresi = f"Kamu masih menyisakan saldo Rp{sisa_saldo:,.0f}. Kebutuhan dasar belum sepenuhnya terpenuhi."
+        penjelasan_ekspresi = f"Kamu masih menyisakan saldo Rp{sisa_saldo:,.0f}. Kebutuhan dasar belum fully teroptimasi."
         warna_card = st.info
 
-    # Display Tampilan Ekspresi
     st.markdown("### **Hasil Efek Keputusan Konsumen:**")
     
     col_exp1, col_exp2 = st.columns([1, 2])
@@ -321,7 +274,6 @@ elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
         st.write(f"- Total Belanja: **Rp {total_pengeluaran:,.0f}**")
         st.write(f"- Sisa Saldo e-Wallet: **Rp {sisa_saldo:,.0f}**")
 
-    # Grafik Visual Alokasi Anggaran
     st.markdown("---")
     st.write("📊 **Visualisasi Alokasi Anggaran vs Keterbatasan (Budget Constraint):**")
     
@@ -344,241 +296,64 @@ elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
 # HALAMAN 3: BAB 2 (EKSPRESI MASYARAKAT KONSUMEN & KURVA INDIFERENSI)
 # ==========================================
 elif pilihan_modul == "Bab 2: Ekspresi Masyarakat Konsumen":
-  st.title("📈 BAB 2: EKSPRESI MASYARAKAT KONSUMEN")
-  st.caption(
-      "Modul Simulasi Model Kebahagiaan, Kurva Indiferensi, dan Marginal Rate"
-      " of Substitution (MRS)"
-  )
-  st.markdown("---")
-
-  # ------------------------------------------
-  # 1. PENGANTAR NARASI & KONSEPTUAL
-  # ------------------------------------------
-  st.subheader("🏬 Dari Ratusan Juta Orang Menjadi Model Sederhana")
-  st.write("""
+    st.title("📈 BAB 2: EKSPRESI MASYARAKAT KONSUMEN")
+    st.caption("Modul Simulasi Model Kebahagiaan, Kurva Indiferensi, dan Marginal Rate of Substitution (MRS)")
+    st.markdown("---")
+    
+    st.subheader("🏬 Dari Ratusan Juta Orang Menjadi Model Sederhana")
+    st.write("""
     Bayangkan ada lebih dari **280 juta penduduk Indonesia** yang setiap hari membuat keputusan konsumsi. 
     Ekonom tidak mungkin mewawancarai mereka satu per satu. Karena itu, digunakan **model ekonomi**—seperti belajar naik sepeda di halaman rumah sebelum ke jalan raya. 
     Kita fokus pada satu hal utama: **bagaimana konsumen mengekspresikan pilihan dan kepuasannya (utility)** melalui kombinasi barang dan jasa.
     """)
+    
+    st.markdown("---")
+    st.subheader("🗺️ Kurva Indiferensi: Peta Kebahagiaan Konsumen")
+    st.write("Kurva Indiferensi (*Indifference Curve*) menunjukkan berbagai kombinasi dua barang (misal: Makanan dan Paket Data) yang memberikan **tingkat kepuasan yang sama** bagi konsumen.")
 
-  # ------------------------------------------
-  # 2. SIMULATOR KURVA INDIFERENSI & PETA KEBAHAGIAAN
-  # ------------------------------------------
-  st.markdown("---")
-  st.subheader("🗺️ Kurva Indiferensi: Peta Kebahagiaan Konsumen")
-  st.write(
-      "Kurva Indiferensi (*Indifference Curve*) menunjukkan berbagai kombinasi"
-      " dua barang (misal: Makanan dan Paket Data) yang memberikan **tingkat"
-      " kepuasan yang sama** bagi konsumen."
-  )
+    st.sidebar.header("⚙️ Parameter Bab 2")
+    tingkat_utility = st.sidebar.slider("Tingkat Kepuasan (Target Utility U):", min_value=10, max_value=30, value=20, step=5)
+    
+    x_makanan = np.linspace(1, 10, 100)
+    y_data_u1 = (tingkat_utility**2) / (x_makanan * 10)
+    y_data_u_low = ((tingkat_utility - 5)**2) / (x_makanan * 10)
+    y_data_u_high = ((tingkat_utility + 5)**2) / (x_makanan * 10)
 
-  # Sidebar Parameter Khusus Bab 2
-  st.sidebar.header("⚙️ Parameter Bab 2")
-  tingkat_utility = st.sidebar.slider(
-      "Tingkat Kepuasan (Target Utility U):",
-      min_value=10,
-      max_value=30,
-      value=20,
-      step=5,
-  )
-
-  # Logika Matematis Sederhana Fungsi Utilitas Cobb-Douglas: U = X^0.5 * Y^0.5 -> Y = (U^2) / X
-  x_makanan = np.linspace(1, 10, 100)
-  y_data_u1 = (tingkat_utility**2) / (x_makanan * 10)
-
-  # Kurva Lebih Tinggi & Lebih Rendah untuk Menunjukkan Peta Kebahagiaan
-  y_data_u_low = ((tingkat_utility - 5) ** 2) / (x_makanan * 10)
-  y_data_u_high = ((tingkat_utility + 5) ** 2) / (x_makanan * 10)
-
-  # Layout Kolom Tampilan
-  col_grafik, col_penjelasan = st.columns([7, 5])
-
-  with col_grafik:
-    fig_ic = go.Figure()
-
-    # Kurva Indiferensi Aktif
-    fig_ic.add_trace(
-        go.Scatter(
-            x=x_makanan,
-            y=y_data_u1,
-            mode="lines",
-            name=f"Kurva Kepuasan Saat Ini (U = {tingkat_utility})",
-            line=dict(color="#FF9800", width=4),
+    col_grafik, col_penjelasan = st.columns([7, 5])
+    
+    with col_grafik:
+        fig_ic = go.Figure()
+        fig_ic.add_trace(go.Scatter(x=x_makanan, y=y_data_u1, mode='lines', name=f'Kepuasan Saat Ini (U = {tingkat_utility})', line=dict(color='#FF9800', width=4)))
+        fig_ic.add_trace(go.Scatter(x=x_makanan, y=y_data_u_low, mode='lines', name='Kepuasan Lebih Rendah', line=dict(color='#BDBDBD', width=2, dash='dash')))
+        fig_ic.add_trace(go.Scatter(x=x_makanan, y=y_data_u_high, mode='lines', name='Kepuasan Lebih Tinggi 🥳', line=dict(color='#4CAF50', width=2, dash='dash')))
+        fig_ic.add_trace(go.Scatter(
+            x=[2, 4, 8], 
+            y=[(tingkat_utility**2)/(2*10), (tingkat_utility**2)/(4*10), (tingkat_utility**2)/(8*10)],
+            mode='markers+text', name='Pilihan Kombinasi (A, B, C)',
+            text=['Kombinasi A', 'Kombinasi B', 'Kombinasi C'],
+            textposition="top right", marker=dict(size=10, color='#E91E63')
+        ))
+        fig_ic.update_layout(
+            title="Kurva Indiferensi (Pilihan Makanan vs Paket Data)",
+            xaxis_title="Makanan / Porsi (X)",
+            yaxis_title="Paket Data / GB (Y)",
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            template="plotly_white"
         )
-    )
+        st.plotly_chart(fig_ic, use_container_width=True)
 
-    # Kurva Peta Kebahagiaan (Map)
-    fig_ic.add_trace(
-        go.Scatter(
-            x=x_makanan,
-            y=y_data_u_low,
-            mode="lines",
-            name="Kepuasan Lebih Rendah",
-            line=dict(color="#BDBDBD", width=2, dash="dash"),
-        )
-    )
-
-    fig_ic.add_trace(
-        go.Scatter(
-            x=x_makanan,
-            y=y_data_u_high,
-            mode="lines",
-            name="Kepuasan Lebih Tinggi 🥳",
-            line=dict(color="#4CAF50", width=2, dash="dash"),
-        )
-    )
-
-    # Menambahkan Titik Kombinasi Kasus Buku (Contoh)
-    fig_ic.add_trace(
-        go.Scatter(
-            x=[2, 4, 8],
-            y=[
-                (tingkat_utility**2) / (2 * 10),
-                (tingkat_utility**2) / (4 * 10),
-                (tingkat_utility**2) / (8 * 10),
-            ],
-            mode="markers+text",
-            name="Pilihan Kombinasi (A, B, C)",
-            text=["Kombinasi A", "Kombinasi B", "Kombinasi C"],
-            textposition="top right",
-            marker=dict(size=10, color="#E91E63"),
-        )
-    )
-
-    fig_ic.update_layout(
-        title="Kurva Indiferensi (Pilihan Makanan vs Paket Data)",
-        xaxis_title="Makanan / Porsi (X)",
-        yaxis_title="Paket Data / GB (Y)",
-        legend=dict(
-            orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
-        ),
-        template="plotly_white",
-    )
-
-    st.plotly_chart(fig_ic, use_container_width=True)
-
-  with col_penjelasan:
-    st.info("💡 **Karakteristik Kurva Indiferensi:**")
-    st.markdown("""
-        1. **Melengkung ke Bawah (Convex to Origin):** Menggambarkan hukum **Marginal Rate of Substitution (MRS)**—semakin banyak suatu barang dimiliki, semakin kecil kesediaan menukarnya dengan barang lain.
-        2. **Semakin Tinggi Kurva = Semakin Happy:** Bergerak ke kanan atas (kurva hijau) artinya konsumsi barang lebih banyak, sehingga manfaat/utility meningkat.
-        3. **Nilainya "Sama Saja" (Indifferent):** Semua titik sepanjang garis oranye memberikan tingkat kepuasan yang identik.
+    with col_penjelasan:
+        st.info("💡 **Karakteristik Kurva Indiferensi:**")
+        st.markdown("""
+        1. **Melengkung ke Bawah (Convex):** Menggambarkan **Marginal Rate of Substitution (MRS)**.
+        2. **Semakin Tinggi Kurva = Semakin Happy:** Kurva hijau menandakan kepuasan lebih tinggi.
+        3. **Kepuasan Sama (Indifferent):** Semua titik sepanjang garis oranye memberikan kepuasan identik.
         """)
+        st.metric(label="Tingkat Kepuasan Konsumen Saat Ini", value=f"Indeks Utility: {tingkat_utility}")
 
-    st.metric(
-        label="Tingkat Kepuasan Konsumen Saat Ini",
-        value=f"Indeks Utility: {tingkat_utility}",
-        delta=(
-            "Geser slider di sidebar untuk melihat Peta Kebahagiaan bertambah"
-        ),
-    )
-
-  # ------------------------------------------
-  # 3. KUIS EVALUASI REFLEKTIF BAB 2
-  # ------------------------------------------
-  st.markdown("---")
-  st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 2)")
-  st.caption(
-      "Uji pemahaman Anda mengenai Kurva Indiferensi, Utilitas, dan MRS."
-  )
-
-  with st.form("kuis_bab2"):
-    st.markdown(
-        "**1. Apa arti kata 'Indifference' dalam konsep Kurva Indiferensi"
-        " dalam teori konsumen?**"
-    )
-    q1_b2 = st.radio(
-        "Pilih jawaban yang tepat:",
-        [
-            "A. Konsumen tidak mampu membeli barang-barang di dalam kurva.",
-            (
-                "B. Konsumen merasa tidak peduli/sama saja karena semua"
-                " kombinasi pada kurva memberikan tingkat kepuasan yang sama."
-            ),
-            "C. Kurva yang menunjukkan ketidakpuasan konsumen atas barang pasar.",
-            (
-                "D. Perbedaan harga barang yang sangat drastis sehingga tidak"
-                " terjangkau."
-            ),
-        ],
-        index=None,
-        key="b2q1",
-    )
-
-    st.markdown("---")
-
-    st.markdown(
-        "**2. Mengapa Kurva Indiferensi berbentuk melengkung (cembung ke arah"
-        " titik nol/convex) dan tidak berbentuk garis lurus?**"
-    )
-    q2_b2 = st.radio(
-        "Pilih jawaban yang tepat:",
-        [
-            "A. Karena harga barang selalu berubah-ubah di pasar.",
-            (
-                "B. Karena adanya prinsip MRS (Marginal Rate of"
-                " Substitution)—semakin banyak kita memiliki suatu barang,"
-                " semakin kecil keinginan menukarnya."
-            ),
-            (
-                "C. Karena pemerintah membatasi jumlah pembelian paket data dan"
-                " makanan."
-            ),
-            "D. Karena pendapatan konsumen tidak mencukupi."
-        ],
-        index=None,
-        key="b2q2",
-    )
-
-    st.markdown("---")
-
-    st.markdown(
-        "**3. Mengapa konsumen selalu lebih menyukai Kurva Indiferensi yang"
-        " posisinya lebih tinggi (lebih ke kanan atas)?**"
-    )
-    q3_b2 = st.radio(
-        "Pilih jawaban yang tepat:",
-        [
-            (
-                "A. Karena posisi kurva yang lebih tinggi menggambarkan"
-                " kombinasi barang yang lebih banyak sehingga memberikan"
-                " manfaat/kepuasan lebih tinggi."
-            ),
-            "B. Karena kurva yang lebih tinggi harganya pasti gratis.",
-            "C. Karena kurva yang lebih rendah dilarang oleh teori ekonomi.",
-            "D. Karena titik tersebut tidak membutuhkan pengorbanan sama sekali."
-        ],
-        index=None,
-        key="b2q3",
-    )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    submit_b2 = st.form_submit_button("🎯 Periksa Jawaban Bab 2")
-
-  if submit_b2:
-    if q1_b2 is None or q2_b2 is None or q3_b2 is None:
-      st.warning("⚠️ Harap jawab semua pertanyaan terlebih dahulu!")
-    else:
-      skor_b2 = 0
-      if q1_b2.startswith("B"):
-        skor_b2 += 100 / 3
-      if q2_b2.startswith("B"):
-        skor_b2 += 100 / 3
-      if q3_b2.startswith("A"):
-        skor_b2 += 100 / 3
-
-      st.markdown("---")
-      st.subheader("📊 Hasil Evaluasi Bab 2")
-
-      if skor_b2 == 100:
-        st.balloons()
-        st.success(
-            f"🎉 **Skor Anda: {skor_b2:.0f} / 100** — Sempurna! Anda sudah"
-            " memahami konsep Peta Kebahagiaan dan Kurva Indiferensi dengan"
-            " sangat baik!"
-        )
-      else:
-        st.info(
-            f"💡 **Skor Anda: {skor_b2:.0f} / 100** — Hasil yang bagus! Coba"
-            " tinjau kembali grafik di atas untuk memperdalam pemahaman."
-        )
+# ==========================================
+# HALAMAN CADANGAN: BAB 3 SAMPAI BAB 20
+# ==========================================
+else:
+    st.title(f"📦 {pilihan_modul}")
+    st.info("Modul ini telah dicadangkan dalam struktur laboratorium dan siap diisi materi simulasi selanjutnya.")
