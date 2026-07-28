@@ -359,12 +359,55 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
     st.caption("Modul Simulasi Batas Anggaran (Budget Line), Intersep, dan Area Pilihan Konsumen")
     st.markdown("---")
     
-    st.subheader("💰 Uang Membatasi Pilihan Konsumen")
+st.subheader("💰 Uang Membatasi Pilihan Konsumen")
     st.write("""
     Meskipun konsumen menginginkan kepuasan setinggi-tingginya, dalam kehidupan nyata pilihan kita selalu dibatasi oleh **jumlah uang yang dimiliki ($M$)** dan **harga barang di pasar ($P_x$ & $P_y$)**.
     Persamaan matematis Garis Anggaran (*Budget Line*) dituliskan sebagai:
     $$M = P_x \cdot X + P_y \cdot Y$$
     """)
+    
+    # === SISIPKAN PANDUAN CARA MENGGAMBAR DI SINI (LINE 368) ===
+    st.subheader("📐 Cara Praktis Menggambar Garis Anggaran")
+    st.write("Untuk menggambar Garis Anggaran pada bidang Kartesius, mahasiswa cukup mengikuti 3 langkah sederhana berikut:")
+    
+    col_step1, col_step2, col_step3 = st.columns(3)
+    
+    with col_step1:
+        st.markdown("### 1️⃣ Cari Intersep Y")
+        st.info("""
+        **Maksimal Paket Data (Y)**
+        $$Y_{\\text{max}} = \\frac{M}{P_y}$$
+        $$\\frac{20.000}{10.000} = 2 \\text{ unit}$$
+        
+        📍 **Titik 1: (0, 2)**
+        *(Seluruh uang untuk Data)*
+        """)
+
+    with col_step2:
+        st.markdown("### 2️⃣ Cari Intersep X")
+        st.info("""
+        **Maksimal Makanan (X)**
+        $$X_{\\text{max}} = \\frac{M}{P_x}$$
+        $$\\frac{20.000}{5.000} = 4 \\text{ porsi}$$
+        
+        📍 **Titik 2: (4, 0)**
+        *(Seluruh uang untuk Makanan)*
+        """)
+
+    with col_step3:
+        st.markdown("### 3️⃣ Tarik Garis Lurus")
+        st.success("""
+        **Hubungkan Titik 1 & 2**
+        
+        Garis miring lurus yang terbentuk adalah **Garis Anggaran**. 
+        
+        📐 **Kemiringan (Slope):**
+        $$-\\frac{P_x}{P_y} = -\\frac{5.000}{10.000} = -0.5$$
+        """)
+    st.markdown("---")
+    # ==========================================================
+
+    st.sidebar.header("⚙️ Parameter Bab 3")
     
     st.sidebar.header("⚙️ Parameter Bab 3")
     m_anggaran = st.sidebar.number_input("Pendapatan / Saldo M (Rp):", min_value=5000, value=20000, step=2500)
