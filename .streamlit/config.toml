@@ -1,0 +1,15 @@
+[theme]
+# Warna latar sebelah kanan (utama) diubah jadi Abu-Abu Muda
+backgroundColor = "#F5F6F8"
+
+# Warna latar belakang Sidebar (sebelah kiri) diubah jadi Putih Bersih
+secondaryBackgroundColor = "#FFFFFF"
+
+# Warna teks utama
+textColor = "#212529"
+
+# Warna aksen (tombol, slider, dan indikator) menggunakan warna biru profesional
+primaryColor = "#1D4ED8"
+
+# Jenis font UI
+font = "sans serif"
