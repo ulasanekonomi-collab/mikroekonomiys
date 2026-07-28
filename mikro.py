@@ -402,12 +402,15 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
 
     # GRAFIK GARIS ANGGARAN PRESISI
     # Membuat 100 titik kontinu dari X=0 sampai X=max_x
+# ------------------------------------------
+    # GRAFIK PLOTLY DENGAN GARIS PROYEKSI (DROP LINES)
+    # ------------------------------------------
     x_line = np.linspace(0, max_x, 100)
     y_line = (m_anggaran - (px_makanan * x_line)) / py_data
 
     fig_bl = go.Figure()
 
-    # Garis Anggaran Biru
+    # 1. Garis Anggaran Biru
     fig_bl.add_trace(go.Scatter(
         x=x_line, 
         y=y_line, 
@@ -427,21 +430,39 @@ elif pilihan_modul == "Bab 3: Ketika Kebahagiaan Dibatasi Garis Anggaran":
         warna_titik = '#F44336' # Merah
         label_posisi = "Di Atas Garis (Terlalu Mahal)"
 
-    # Titik Plotting Konsumen
+    # 2. GARIS PROYEKSI KE SUMBU X (Ke Bawah)
+    fig_bl.add_trace(go.Scatter(
+        x=[pilihan_x, pilihan_x],
+        y=[0, pilihan_y],
+        mode='lines',
+        showlegend=False,
+        line=dict(color='gray', width=1.5, dash='dash')
+    ))
+
+    # 3. GARIS PROYEKSI KE SUMBU Y (Ke Kiri)
+    fig_bl.add_trace(go.Scatter(
+        x=[0, pilihan_x],
+        y=[pilihan_y, pilihan_y],
+        mode='lines',
+        showlegend=False,
+        line=dict(color='gray', width=1.5, dash='dash')
+    ))
+
+    # 4. Titik Plotting Konsumen
     fig_bl.add_trace(go.Scatter(
         x=[pilihan_x], 
         y=[pilihan_y], 
         mode='markers+text', 
         name='Pilihan Kamu',
-        text=[f'Pilihan ({pilihan_x}, {pilihan_y}) - {label_posisi}'],
+        text=[f' Pilihan ({pilihan_x} Makanan, {pilihan_y} Paket Data)'],
         textposition="top right", 
         marker=dict(size=14, color=warna_titik, line=dict(width=2, color='black'))
     ))
 
     fig_bl.update_layout(
         title=f"Garis Anggaran Konsumen (Pendapatan M = Rp {m_anggaran:,.0f})",
-        xaxis_title="Makanan / Porsi (X)",
-        yaxis_title="Paket Data / Unit (Y)",
+        xaxis_title="Makanan / Porsi (Sumbu Horizontal X)",
+        yaxis_title="Paket Data / Unit (Sumbu Vertikal Y)",
         xaxis=dict(range=[-0.2, max(max_x * 1.2, 5)]),
         yaxis=dict(range=[-0.2, max(max_y * 1.2, 3)]),
         template="plotly_white"
