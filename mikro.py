@@ -242,45 +242,102 @@ if pilihan_modul == "Pengantar: Filosofi No Market No Happy":
 # ==========================================
 elif pilihan_modul == "Bab 1: Pilihan Konsumen & Keterbatasan Anggaran":
     st.title("🍜 BAB 1: KEPUTUSAN KONSUMEN & KETERBATASAN ANGGARAN")
-    st.caption("Studi Kasus: Mahasiswa Kelas Pukul 10 Pagi dengan Saldo Rp22.500")
+    st.caption("Modul Simulasi Sirkulasi Pasar, Anggaran Rp22.500, dan Ekspresi Kepuasan Konsumen")
     st.markdown("---")
     
-    st.sidebar.header("⚙️ Parameter Bab 1")
-    saldo_mahasiswa = st.sidebar.number_input("Saldo e-Wallet / Uang Saku (Rp):", value=22500, step=500)
+    # ------------------------------------------
+    # 1. ILUSTRASI ILMU PASAR (UANG, BARANG, KEBUTUHAN)
+    # ------------------------------------------
+    st.subheader("🔄 Ilustrasi Arus Melingkar Pasar (Circular Flow of Market)")
+    st.write("Pasar mempertemukan 3 elemen utama dalam keputusan ekonomi harianmu:")
     
-    st.subheader("💡 Simulasi Keputusan Kombinasi Konsumsi")
-    st.write(f"Dengan saldo sebesar **Rp{saldo_mahasiswa:,.0f}**, kamu dihadapkan pada pilihan kebutuhan perut vs kebutuhan tugas kuliah:")
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.info("🍜 **Pilihan 1: Mie Pedas + Paket Data**")
-        st.write("- Mie Pedas: Rp15.000")
-        st.write("- Paket Data Kategori Kecil: Rp7.500")
-        st.write("**Total:** Rp22.500")
-        if saldo_mahasiswa >= 22500:
-            st.success("✅ **Terjangkau!** (Perut Kenyang + Tugas Kuliah Jalan)")
-        else:
-            st.error("❌ Saldo Tidak Cukup")
-            
-    with col2:
-        st.info("🍗 **Pilihan 2: Ayam Geprek + Es Teh**")
-        st.write("- Ayam Geprek + Nasi: Rp18.000")
-        st.write("- Es Teh Manis: Rp4.500")
-        st.write("**Total:** Rp22.500")
-        if saldo_mahasiswa >= 22500:
-            st.success("✅ **Terjangkau!** (Perut Sangat Kenyang, Tugas Buka Wi-Fi Kampus)")
-        else:
-            st.error("❌ Saldo Tidak Cukup")
+    col_a, col_b, col_c = st.columns(3)
+    with col_a:
+        st.metric(label="💰 1. UANG (Anggaran/Saldo)", value="Rp 22.500", delta="Keterbatasan Sumber Daya")
+    with col_b:
+        st.metric(label="🛍️ 2. PASAR (Mekanisme Transaksi)", value="Kantin / App Digital", delta="Pertukaran Efisien")
+    with col_c:
+        st.metric(label="📦 3. BARANG & JASA", value="Makanan & Internet", delta="Pemenuhan Kebutuhan")
+        
+    st.markdown("---")
 
-    with col3:
-        st.warning("☕ **Pilihan 3: Ngopi di Café Modern**")
-        st.write("- Kopi Latte: Rp35.000")
-        st.write("- Pastry: Rp20.000")
-        st.write("**Total:** Rp55.000")
-        if saldo_mahasiswa >= 55000:
-            st.success("✅ Terjangkau")
-        else:
-            st.error("❌ **Tidak Terjangkau!** (Mengharuskan Trade-Off / Menunda)")
+    # ------------------------------------------
+    # 2. SIMULATOR ALOKASI ANGGARAN & EKSPRESI KONSUMEN
+    # ------------------------------------------
+    st.subheader("📊 Simulator Alokasi Anggaran & Ekspresi Kebahagiaan")
+    
+    st.sidebar.header("⚙️ Parameter Bab 1")
+    saldo_mahasiswa = st.sidebar.number_input("Saldo e-Wallet (Rp):", min_value=5000, value=22500, step=1000)
+    
+    # Input Alokasi oleh Mahasiswa
+    st.write("Atur alokasi pembagian uang sakumu untuk **Makanan** dan **Paket Data**:")
+    
+    col_input1, col_input2 = st.columns(2)
+    with col_input1:
+        biaya_makan = st.slider("Pengeluaran untuk Makanan (Rp):", min_value=0, max_value=int(saldo_mahasiswa), value=15000, step=2500)
+    with col_input2:
+        biaya_data = st.slider("Pengeluaran untuk Paket Data (Rp):", min_value=0, max_value=int(saldo_mahasiswa), value=7500, step=2500)
+        
+    total_pengeluaran = biaya_makan + biaya_data
+    sisa_saldo = saldo_mahasiswa - total_pengeluaran
+
+    # Logika Ekspresi Konsumen berdasarkan Keputusan
+    if total_pengeluaran > saldo_mahasiswa:
+        ekspresi_emoji = "😫"
+        status_kepuasan = "Overbudget! Defisit / Saldo Tidak Cukup"
+        penjelasan_ekspresi = "Uang sakumu tidak mencukupi kombinasi ini. Kamu harus mengorbankan salah satu barang (Trade-off)!"
+        warna_card = st.error
+    elif biaya_makan >= 12000 and biaya_data >= 5000:
+        ekspresi_emoji = "🥳"
+        status_kepuasan = "Sangat Happy & Produktif! (Kombinasi Optimal)"
+        penjelasan_ekspresi = "Perut kenyang, tugas kuliah tetap jalan karena koneksi internet aman! Inilah keputusan paling optimal."
+        warna_card = st.success
+    elif biaya_makan >= 18000 and biaya_data < 5000:
+        ekspresi_emoji = "😋"
+        status_kepuasan = "Perut Kenyang Tapi Tugas Terhambat!"
+        penjelasan_ekspresi = "Makanannya enak dan kenyang, tapi kamu tidak punya kuota untuk submit tugas kuliah jam 12 nanti."
+        warna_card = st.warning
+    elif biaya_makan < 10000 and biaya_data >= 10000:
+        ekspresi_emoji = "📱"
+        status_kepuasan = "Internet Kencang Tapi Perut Keroncongan!"
+        penjelasan_ekspresi = "Tugas kuliah lancar jaya, tapi perutmu lapar dan konsentrasi belajar jadi terganggu."
+        warna_card = st.warning
+    else:
+        ekspresi_emoji = "😐"
+        status_kepuasan = "Kurang Kepuasan (Masih Ada Sisa Saldo)"
+        penjelasan_ekspresi = f"Kamu masih menyisakan saldo Rp{sisa_saldo:,.0f}. Kebutuhan dasar belum sepenuhnya terpenuhi."
+        warna_card = st.info
+
+    # Display Tampilan Ekspresi
+    st.markdown("### **Hasil Efek Keputusan Konsumen:**")
+    
+    col_exp1, col_exp2 = st.columns([1, 2])
+    with col_exp1:
+        st.markdown(f"# {ekspresi_emoji}")
+        st.markdown(f"**Ekspresi:** {status_kepuasan}")
+    with col_exp2:
+        warna_card(f"**Analisis Ekonomi:**  \n{penjelasan_ekspresi}")
+        st.write(f"- Total Belanja: **Rp {total_pengeluaran:,.0f}**")
+        st.write(f"- Sisa Saldo e-Wallet: **Rp {sisa_saldo:,.0f}**")
+
+    # Grafik Visual Alokasi Anggaran
+    st.markdown("---")
+    st.write("📊 **Visualisasi Alokasi Anggaran vs Keterbatasan (Budget Constraint):**")
+    
+    df_bab1 = pd.DataFrame({
+        'Kategori': ['Makanan', 'Paket Data', 'Sisa Saldo'],
+        'Jumlah (Rp)': [biaya_makan, biaya_data, max(0, sisa_saldo)]
+    })
+    
+    fig_bab1 = px.pie(
+        df_bab1, 
+        values='Jumlah (Rp)', 
+        names='Kategori', 
+        hole=0.4,
+        color='Kategori',
+        color_discrete_map={'Makanan': '#FF9800', 'Paket Data': '#2196F3', 'Sisa Saldo': '#4CAF50'}
+    )
+    st.plotly_chart(fig_bab1, use_container_width=True)
 
 # ==========================================
 # HALAMAN 3: BAB 2 (SIAP DIISI)
