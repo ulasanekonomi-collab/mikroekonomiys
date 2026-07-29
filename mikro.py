@@ -870,3 +870,79 @@ elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
         )
       else:
         st.info(f"👍 **Skor Anda: {skor_b4} / 100** — Coba tinjau kembali grafik persinggungan di atas.")
+# ==========================================
+# HALAMAN: BAB 20 (SUPLEMEN MATEMATIKA: OPTIMASI & FOC)
+# ==========================================
+elif pilihan_modul == "Bab 20: Suplemen Matematika - Optimasi & FOC":
+    st.title("📐 BAB 20: SUPLEMEN MATEMATIKA - OPTIMASI & FOC")
+    st.caption("Modul Pengayaan Kalkulus: Penurunan Lagrange, First-Order Conditions (FOC), dan Proposisi Ekonomi")
+    st.markdown("---")
+
+    # 1. PARAMETER DYNAMIC INPUT FOR MATHEMATICAL DEMONSTRATION
+    st.sidebar.header("⚙️ Parameter Lab FOC (Bab 20)")
+    m_anggaran = st.sidebar.number_input("Pendapatan M (Rp):", min_value=5000, value=20000, step=2500, key="b20_m")
+    px_makanan = st.sidebar.number_input("Harga Makanan Px (Rp):", min_value=1000, value=5000, step=1000, key="b20_px")
+    py_data = st.sidebar.number_input("Harga Paket Data Py (Rp):", min_value=1000, value=10000, step=1000, key="b20_py")
+
+    # Nilai optimal
+    opt_x = m_anggaran / (2 * px_makanan) if px_makanan > 0 else 0.0
+    opt_y = m_anggaran / (2 * py_data) if py_data > 0 else 0.0
+    
+    mu_x_opt = opt_y
+    mu_y_opt = opt_x
+    equi_x = mu_x_opt / px_makanan
+    equi_y = mu_y_opt / py_data
+    lambda_val = equi_x
+
+    st.subheader("💡 Mengapa Ekonom Menggunakan FOC?")
+    st.write("""
+    Tujuan ekonom mencari *First-Order Conditions* (FOC) bukan sekadar untuk menghitung angka $X$ dan $Y$. 
+    Matematika digunakan sebagai bahasa presisi untuk menggali **informasi logis (proposisi)** di balik keputusan manusia saat dihadapkan pada kelangkaan.
+    """)
+
+    # 2. PILAR PEDAGOGIS TABULASI FOC
+    st.markdown("---")
+    st.subheader("🎓 Bedah Langkah Demi Langkah (Step-by-Step FOC Engine)")
+
+    tab_step1, tab_step2, tab_step3 = st.tabs([
+        "1️⃣ Formulasi Lagrange", 
+        "2️⃣ Turunan Pertama (FOC)", 
+        "3️⃣ Proposisi Ekonomi Logis"
+    ])
+
+    with tab_step1:
+        st.markdown("#### **Langkah 1: Membentuk Fungsi Lagrange**")
+        st.write(f"Konsumen memaksimumkan fungsi utilitas $U(X,Y) = X \\cdot Y$ dengan kendala anggaran $\\text{{Rp}}{m_anggaran:,.0f} = \\text{{Rp}}{px_makanan:,.0f}X + \\text{{Rp}}{py_data:,.0f}Y$.")
+        st.latex(rf"\mathcal{{L}}(X, Y, \lambda) = (X \cdot Y) + \lambda ({m_anggaran} - {px_makanan}X - {py_data}Y)")
+        st.info("💡 **Makna Pedagogis:** Pengali Lagrange ($\lambda$) mencerminkan *marginal utility of money*, yaitu besarnya tambahan kepuasan untuk setiap tambahan satu rupiah pendapatan.")
+
+    with tab_step2:
+        st.markdown("#### **Langkah 2: Membentuk Kondisi Tingkat Pertama (FOC)**")
+        st.write("Agar fungsi mencapai titik maksimum, seluruh turunan parsial pertama disamakan dengan nol ($\partial \mathcal{L} = 0$):")
+        
+        col_foc1, col_foc2 = st.columns(2)
+        with col_foc1:
+            st.latex(r"\frac{\partial \mathcal{L}}{\partial X} = Y - \lambda P_x = 0 \implies MU_x = \lambda P_x")
+            st.caption(f"Pada titik optimal: $MU_x = {mu_x_opt:.2f}$ util (turunan terhadap X).")
+            
+        with col_foc2:
+            st.latex(r"\frac{\partial \mathcal{L}}{\partial Y} = X - \lambda P_y = 0 \implies MU_y = \lambda P_y")
+            st.caption(f"Pada titik optimal: $MU_y = {mu_y_opt:.2f}$ util (turunan terhadap Y).")
+
+    with tab_step3:
+        st.markdown("#### **Langkah 3: Menggali Proposisi Ekonomi (Informasi Logis)**")
+        st.write("Dari kondisi FOC di atas, ekonom mengekstrak **dua proposisi fundamental**:")
+        
+        st.success(f"""
+        **📌 Proposisi 1: Kesamaan Rasio Penukaran Subjektif dan Objektif ($MRS = P_x / P_y$)**
+        $$MRS = \\frac{{MU_x}}{{MU_y}} = \\frac{{{mu_x_opt:.2f}}}{{{mu_y_opt:.2f}}} = {mu_x_opt/mu_y_opt:.2f}$$
+        $$\\text{{Rasio Harga Pasar}} = \\frac{{P_x}}{{P_y}} = \\frac{{{px_makanan}}}{{{py_data}}} = {px_makanan/py_data:.2f}$$
+        *Tingkat kesediaan subjektif konsumen menukar barang ($MRS$) persis setara dengan tingkat penukaran objektif di pasar ($\frac{{P_x}}{{P_y}}$).*
+        """)
+        
+        st.warning(f"""
+        **📌 Proposisi 2: Prinsip Equi-Marginal Utility per Rupiah ($\lambda$)**
+        $$\\frac{{MU_x}}{{P_x}} = \\frac{{{mu_x_opt:.2f}}}{{{px_makanan}}} = {equi_x:.6f} \\text{{ util/rupiah}}$$
+        $$\\frac{{MU_y}}{{P_y}} = \\frac{{{mu_y_opt:.2f}}}{{{py_data}}} = {equi_y:.6f} \\text{{ util/rupiah}}$$
+        *Rupiah terakhir yang dibelanjakan untuk Makanan memberikan tambahan kepuasan yang **persis sama** dengan rupiah terakhir yang dibelanjakan untuk Paket Data (sebesar $\lambda = {lambda_val:.6f}$ util/rupiah).*
+        """)
