@@ -1077,3 +1077,135 @@ elif pilihan_modul == "Bab 20: [Cadangan Bab 20]":
           "Terbukti bahwa pada titik ini, rupiah terakhir yang dikeluarkan"
           " memberikan tambahan manfaat yang **persis sama**!"
       )
+# ------------------------------------------
+    # VISUALISASI 3D SURFACE & PROYEKSI IRISAN CONTOUR (IC)
+    # ------------------------------------------
+    st.markdown("---")
+    st.subheader(
+        "Membayangkan Kurva Indiferensi dari Gunung Utilitas 3D"
+    )
+    st.write("""
+    Bagaimana hubungan antara **Fungsi Utilitas Total $U(X,Y)$** dan **Kurva Indiferensi**? 
+    Kurva Indiferensi sebenarnya adalah **irisan mendatar (kontur ketinggian)** dari permukaan 3D fungsi utilitas $U = X \cdot Y$ pada tingkat kepuasan tertentu ($U = \bar{U}$).
+    """)
+
+    # Generasi Grid Data 3D
+    x_range = np.linspace(0.1, max(opt_x * 2.2, 5), 40)
+    y_range = np.linspace(0.1, max(opt_y * 2.2, 5), 40)
+    X_mesh, Y_mesh = np.meshgrid(x_range, y_range)
+    Z_mesh = X_mesh * Y_mesh  # Fungsi Utilitas U = X * Y
+
+    u_opt = np.sqrt(opt_x * opt_y) ** 2  # Nilai Utilitas Optimal (U*)
+
+    tab_3d, tab_2d = st.tabs(
+        ["🏔️ Permukaan Utilitas 3D (Surface)", "🗺️ Proyeksi Kontur 2D (IC & BL)"]
+    )
+
+    with tab_3d:
+      # Plot 3D Surface
+      fig_3d = go.Figure()
+
+      # Permukaan 3D U = X*Y
+      fig_3d.add_trace(
+          go.Surface(
+              z=Z_mesh,
+              x=X_mesh,
+              y=Y_mesh,
+              colorscale="Viridis",
+              opacity=0.85,
+              name="Fungsi Utilitas U(X,Y)",
+          )
+      )
+
+      # Titik Optimal 3D
+      fig_3d.add_trace(
+          go.Scatter3d(
+              x=[opt_x],
+              y=[opt_y],
+              z=[u_opt],
+              mode="markers+text",
+              name="Puncak Keseimbangan (X*, Y*, U*)",
+              text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f}, U={u_opt:.1f})"],
+              textposition="top center",
+              marker=dict(size=8, color="red", symbol="circle"),
+          )
+      )
+
+      fig_3d.update_layout(
+          title="Permukaan Fungsi Utilitas 3D: U(X,Y) = X · Y",
+          scene=dict(
+              xaxis_title="Makanan (X)",
+              yaxis_title="Paket Data (Y)",
+              zaxis_title="Utilitas Total (U)",
+              camera=dict(eye=dict(x=1.6, y=1.6, z=1.2)),
+          ),
+          margin=dict(l=0, r=0, b=0, t=40),
+      )
+
+      st.plotly_chart(fig_3d, use_container_width=True)
+      st.caption(
+          "💡 **Petunjuk Interaktif:** Putar grafik 3D di atas menggunakan"
+          " kursor mouse Anda untuk melihat ketinggian permukaan utilitas dari"
+          " berbagai sudut pandang."
+      )
+
+    with tab_2d:
+      # Plot 2D Contour (Peta Irisan Horisontal)
+      fig_2d = go.Figure()
+
+      # Kontur Irisan Utilitas
+      fig_2d.add_trace(
+          go.Contour(
+              z=Z_mesh,
+              x=x_range,
+              y=y_range,
+              colorscale="Viridis",
+              contours=dict(showlabels=True, labelfont=dict(size=10, color="white")),
+              name="Peta Kontur Utility",
+          )
+      )
+
+      # Garis Anggaran 2D
+      y_bl_2d = (m_anggaran - (px_makanan * x_range)) / py_data
+      fig_2d.add_trace(
+          go.Scatter(
+              x=x_range,
+              y=y_bl_2d,
+              mode="lines",
+              name="Garis Anggaran (BL)",
+              line=dict(color="red", width=3, dash="dash"),
+          )
+      )
+
+      # Titik Singgung Optimal
+      fig_2d.add_trace(
+          go.Scatter(
+              x=[opt_x],
+              y=[opt_y],
+              mode="markers+text",
+              name="Titik Optimal Singgung",
+              text=[f" E ({opt_x:.1f}, {opt_y:.1f})"],
+              textposition="top right",
+              marker=dict(
+                  size=12, color="yellow", line=dict(width=2, color="black")
+              ),
+          )
+      )
+
+      fig_2d.update_layout(
+          title="Proyeksi Kontur 2D (Irisan Ketinggian U = Indifference Curve)",
+          xaxis_title="Makanan (X)",
+          yaxis_title="Paket Data (Y)",
+          xaxis=dict(range=[0, max(opt_x * 2, 4)]),
+          yaxis=dict(range=[0, max(opt_y * 2, 4)]),
+          template="plotly_white",
+      )
+
+      st.plotly_chart(fig_2d, use_container_width=True)
+      st.info(
+          "💡 **Makna Geometris:** Setiap garis warna pada peta kontur 2D di"
+          " atas mewakili **satu Kurva Indiferensi**. Ketika kita memotong"
+          " Gunung Utilitas 3D secara horizontal pada ketinggian $U^* ="
+          f" {u_opt:.1f}$, kita memperoleh Kurva Indiferensi yang"
+          " bersinggungan dengan Garis Anggaran (garis merah putus-putus)."
+      )
