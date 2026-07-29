@@ -1095,56 +1095,86 @@ elif (
   st.markdown("""
     ### 🎭 Peta di Dalam Benak Konsumen: Barang, Jasa, dan Utilitas
     
-    Setiap hari kita dikelilingi oleh ribuan pilihan barang dan jasa—sepiring makanan, paket data internet, hingga jam hiburan. Namun, dalam kacamata ekonomi mikro, **manusia tidak sekadar membeli barang atau jasa itu sendiri, melainkan membeli kepuasan (*utility*) yang terkandung di dalamnya.**
+    Setiap hari kita dikelilingi oleh ribuan pilihan barang dan jasa. Namun, dalam kacamata ekonomi mikro, **manusia tidak sekadar membeli barang/jasa itu sendiri, melainkan membeli kepuasan (*utility*) yang terkandung di dalamnya.**
     
     Utilitas adalah jembatan yang menghubungkan *dunia fisik barang/jasa* (yang bisa dihitung dalam kg, liter, atau unit) dengan *dunia psikologis manusia* (rasa kenyang, senang, atau nyaman).
-    
-    #### 1. Utilitas Khas bersifat Subjektif
-    Dua orang yang mengonsumsi barang dalam jumlah yang sama persis bisa mendapatkan nilai utilitas yang sangat berlainan. Oleh karena itu, fungsi utilitas $U = f(X,Y)$ pada hakikatnya adalah **peta preferensi unik** milik seorang individu.
-    
-    #### 2. Pola Interaksi Antar Barang
-    Dalam kehidupan nyata, utilitas suatu barang dipengaruhi oleh keberadaan barang lainnya:
-    * **Saling Menopang (Interaksi Multiplikatif - Cobb-Douglas):** $U = X \\cdot Y$. Makanan ($X$) dan Paket Data ($Y$) saling menguatkan. Perut kenyang tanpa kuota terasa membosankan, namun punya kuota melimpah saat kelaparan juga menyiksa. Kepuasan tertinggi dicapai pada komposisi seimbang.
-    * **Saling Menggantikan (Substitusi):** $U = aX + bY$. Barang yang fungsi atau perannya dapat saling menggantikan fleksibel secara linier.
-    * **Pasangan Kaku (Komplementer Sempurna - Leontief):** $U = \\min(aX, bY)$. Barang yang hanya berguna jika dikonsumsi bersamaan dalam proporsi spesifik (misal: sepatu kanan dan sepatu kiri).
     
     ---
     """)
 
-  # Sidebar Parameter Input
-  st.sidebar.header("⚙️ Parameter Lampiran A")
+  # Sidebar Parameter Input & Tipe Fungsi
+  st.sidebar.header("⚙️ Parameter & Tipe Interaksi")
+
+  tipe_fungsi = st.sidebar.radio(
+      "Pilih Pola Interaksi Barang:",
+      [
+          "Saling Menopang (Cobb-Douglas)",
+          "Saling Menggantikan (Substitusi Linier)",
+          "Pasangan Kaku (Komplementer Leontief)",
+      ],
+      key="la_tipe_fungsi",
+  )
+
   m_anggaran = st.sidebar.number_input(
       "Pendapatan M (Rp):", min_value=5000, value=20000, step=2500, key="la_m"
   )
   px_makanan = st.sidebar.number_input(
-      "Harga Makanan Px (Rp):", min_value=1000, value=5000, step=1000, key="la_px"
+      "Harga Barang X (Rp):", min_value=1000, value=5000, step=1000, key="la_px"
   )
   py_data = st.sidebar.number_input(
-      "Harga Paket Data Py (Rp):",
+      "Harga Barang Y (Rp):",
       min_value=1000,
       value=10000,
       step=1000,
       key="la_py",
   )
 
-  # Nilai Komputasi
-  opt_x = m_anggaran / (2 * px_makanan) if px_makanan > 0 else 0.0
-  opt_y = m_anggaran / (2 * py_data) if py_data > 0 else 0.0
-  u_opt = opt_x * opt_y
+  # Grid Data untuk Visualisasi
+  x_max = (m_anggaran / px_makanan) * 1.5 if px_makanan > 0 else 10
+  y_max = (m_anggaran / py_data) * 1.5 if py_data > 0 else 10
 
-  st.markdown("""
-    ### 📐 Dari Psikologi Subjektif ke Geometri 3D & 2D
-    Bagaimana kita memindahkan fenomena psikologis ini ke dalam grafik?
-    
-    * **Permukaan 3D:** Menggambarkan bukit kepuasan di mana sumbu $X$ dan $Y$ adalah barang/jasa, sedangkan tinggi permukaan ($Z$) adalah tingkat utilitas total $U(X,Y)$.
-    * **Proyeksi Kontur 2D:** Menunjukkan **Kurva Indiferensi (*Indifference Curve*)**, yaitu irisan mendatar pada ketinggian bukit utilitas tertentu.
-    """)
-
-  # Grid Data 3D & 2D
-  x_range = np.linspace(0.1, max(opt_x * 2.2, 5), 40)
-  y_range = np.linspace(0.1, max(opt_y * 2.2, 5), 40)
+  x_range = np.linspace(0.01, x_max, 50)
+  y_range = np.linspace(0.01, y_max, 50)
   X_mesh, Y_mesh = np.meshgrid(x_range, y_range)
-  Z_mesh = X_mesh * Y_mesh  # Contoh Kasus Interaksi Cobb-Douglas U = X * Y
+
+  # Komputasi Berdasarkan Tipe Fungsi yang Dipilih
+  if tipe_fungsi == "Saling Menopang (Cobb-Douglas)":
+    Z_mesh = X_mesh * Y_mesh
+    opt_x = m_anggaran / (2 * px_makanan)
+    opt_y = m_anggaran / (2 * py_data)
+    u_opt = opt_x * opt_y
+    penjelasan_interaksi = (
+        "**Cobb-Douglas ($U = X \\cdot Y$):** Permukaan melengkung mulus."
+        " Kepuasan maksimal dicapai saat kedua barang dikonsumsi secara"
+        " seimbang."
+    )
+
+  elif tipe_fungsi == "Saling Menggantikan (Substitusi Linier)":
+    Z_mesh = X_mesh + Y_mesh
+    # Untuk substitusi linier 1:1, corner solution tergantung mana yang lebih murah
+    if px_makanan < py_data:
+      opt_x, opt_y = m_anggaran / px_makanan, 0
+    else:
+      opt_x, opt_y = 0, m_anggaran / py_data
+    u_opt = opt_x + opt_y
+    penjelasan_interaksi = (
+        "**Substitusi Linier ($U = X + Y$):** Permukaan berupa bidang datar"
+        " miring. Kurva indiferensinya berupa garis lurus (*corner solution*)."
+    )
+
+  else:  # Komplementer Leontief
+    Z_mesh = np.minimum(X_mesh, Y_mesh)
+    # Optimum Leontief X = Y -> Px*X + Py*X = M -> X = M/(Px+Py)
+    opt_x = m_anggaran / (px_makanan + py_data)
+    opt_y = opt_x
+    u_opt = min(opt_x, opt_y)
+    penjelasan_interaksi = (
+        "**Komplementer Leontief ($U = \\min(X, Y)$):** Permukaan berbentuk"
+        " atap/siku. Kurva indiferensinya membentuk sudut $90^\\circ$ (huruf"
+        " L)."
+    )
+
+  st.info(f"💡 **Karakter Visual Dipilih:** {penjelasan_interaksi}")
 
   tab_3d, tab_2d = st.tabs(
       ["🏔️ Permukaan Utilitas 3D (Surface)", "🗺️ Proyeksi Kontur 2D (IC & BL)"]
@@ -1159,7 +1189,7 @@ elif (
             y=Y_mesh,
             colorscale="Viridis",
             opacity=0.85,
-            name="Fungsi Utilitas U(X,Y)",
+            name="Utilitas U(X,Y)",
         )
     )
     fig_3d.add_trace(
@@ -1168,27 +1198,23 @@ elif (
             y=[opt_y],
             z=[u_opt],
             mode="markers+text",
-            name="Puncak Keseimbangan",
-            text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f}, U={u_opt:.1f})"],
+            name="Titik Optimum",
+            text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f})"],
             textposition="top center",
             marker=dict(size=8, color="red", symbol="circle"),
         )
     )
     fig_3d.update_layout(
-        title="Permukaan Bukit Utilitas 3D: U(X,Y) = X · Y",
+        title=f"Bukit Utilitas 3D: {tipe_fungsi}",
         scene=dict(
-            xaxis_title="Makanan (X)",
-            yaxis_title="Paket Data (Y)",
-            zaxis_title="Utilitas Total (U)",
+            xaxis_title="Barang X",
+            yaxis_title="Barang Y",
+            zaxis_title="Utilitas (U)",
             camera=dict(eye=dict(x=1.6, y=1.6, z=1.2)),
         ),
         margin=dict(l=0, r=0, b=0, t=40),
     )
     st.plotly_chart(fig_3d, use_container_width=True)
-    st.caption(
-        "💡 **Petunjuk Interaktif:** Putar grafik 3D di atas menggunakan kursor"
-        " mouse untuk melihat permukaan 'bukit kepuasan' dari berbagai sudut."
-    )
 
   with tab_2d:
     fig_2d = go.Figure()
@@ -1201,7 +1227,7 @@ elif (
             contours=dict(
                 showlabels=True, labelfont=dict(size=10, color="white")
             ),
-            name="Peta Kontur Utility",
+            name="Kontur Utility",
         )
     )
     y_bl_2d = (m_anggaran - (px_makanan * x_range)) / py_data
@@ -1228,16 +1254,11 @@ elif (
         )
     )
     fig_2d.update_layout(
-        title="Proyeksi Kontur 2D (Irisan Horisontal = Indifference Curve)",
-        xaxis_title="Makanan (X)",
-        yaxis_title="Paket Data (Y)",
-        xaxis=dict(range=[0, max(opt_x * 2, 4)]),
-        yaxis=dict(range=[0, max(opt_y * 2, 4)]),
+        title=f"Proyeksi Kontur 2D: {tipe_fungsi}",
+        xaxis_title="Barang X",
+        yaxis_title="Barang Y",
+        xaxis=dict(range=[0, x_max]),
+        yaxis=dict(range=[0, y_max]),
         template="plotly_white",
     )
     st.plotly_chart(fig_2d, use_container_width=True)
-    st.info(
-        "💡 **Kesimpulan Visual:** Irisan horizontal pada ketinggian bukit"
-        f" $U^* = {u_opt:.1f}$ menghasilkan Kurva Indiferensi 2D yang"
-        " bersinggungan tepat di titik optimal keseimbangan konsumen."
-    )
