@@ -50,6 +50,7 @@ with st.sidebar:
         "Bab 18: [Cadangan Bab 18]",
         "Bab 19: [Cadangan Bab 19]",
         "Bab 20: [Cadangan Bab 20]",
+        "Lampiran A: Eksplorasi Visual 3D & Peta Kontur Utilitas",
     ]
     
     pilihan_modul = st.selectbox("Navigasi Bab:", daftar_bab)
@@ -1077,4 +1078,144 @@ elif pilihan_modul == "Bab 20: [Cadangan Bab 20]":
           "Terbukti bahwa pada titik ini, rupiah terakhir yang dikeluarkan"
           " memberikan tambahan manfaat yang **persis sama**!"
       )
+# ==========================================
+# HALAMAN: LAMPIRAN A (ANEKSASI VISUALISASI 3D & 2D)
+# ==========================================
+elif (
+    pilihan_modul == "Lampiran A: Eksplorasi Visual 3D & Peta Kontur Utilitas"
+):
+  st.title("🗺️ LAMPIRAN A: EKSPLORASI GEOMETRI UTILITAS 3D & 2D")
+  st.caption(
+      "Aneksasi Visual: Memahami Hubungan Antara Permukaan Utilitas Total dan"
+      " Kurva Indiferensi"
+  )
+  st.markdown("---")
 
+  # Parameter Input untuk Aneksasi Visual
+  st.sidebar.header("⚙️ Parameter Lampiran A")
+  m_anggaran = st.sidebar.number_input(
+      "Pendapatan M (Rp):", min_value=5000, value=20000, step=2500, key="la_m"
+  )
+  px_makanan = st.sidebar.number_input(
+      "Harga Makanan Px (Rp):", min_value=1000, value=5000, step=1000, key="la_px"
+  )
+  py_data = st.sidebar.number_input(
+      "Harga Paket Data Py (Rp):",
+      min_value=1000,
+      value=10000,
+      step=1000,
+      key="la_py",
+  )
+
+  # Nilai Komputasi
+  opt_x = m_anggaran / (2 * px_makanan) if px_makanan > 0 else 0.0
+  opt_y = m_anggaran / (2 * py_data) if py_data > 0 else 0.0
+  u_opt = opt_x * opt_y
+
+  st.write("""
+    ### 📌 Pengantar Aneksasi
+    Dalam teori ekonomi mikro, **Kurva Indiferensi (*Indifference Curve*)** sebenarnya bukan sekadar garis melengkung 2D biasa.
+    Secara geometris, Kurva Indiferensi adalah **irisan mendatar (*contour line*)** dari permukaan 3D **Fungsi Utilitas Total $U(X,Y)$** pada tingkat kepuasan tertentu ($U = \bar{U}$).
+    """)
+
+  # Grid Data 3D
+  x_range = np.linspace(0.1, max(opt_x * 2.2, 5), 40)
+  y_range = np.linspace(0.1, max(opt_y * 2.2, 5), 40)
+  X_mesh, Y_mesh = np.meshgrid(x_range, y_range)
+  Z_mesh = X_mesh * Y_mesh  # U = X * Y
+
+  tab_3d, tab_2d = st.tabs(
+      ["🏔️ Permukaan Utilitas 3D (Surface)", "🗺️ Proyeksi Kontur 2D (IC & BL)"]
+  )
+
+  with tab_3d:
+    fig_3d = go.Figure()
+    fig_3d.add_trace(
+        go.Surface(
+            z=Z_mesh,
+            x=X_mesh,
+            y=Y_mesh,
+            colorscale="Viridis",
+            opacity=0.85,
+            name="Fungsi Utilitas U(X,Y)",
+        )
+    )
+    fig_3d.add_trace(
+        go.Scatter3d(
+            x=[opt_x],
+            y=[opt_y],
+            z=[u_opt],
+            mode="markers+text",
+            name="Puncak Keseimbangan",
+            text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f}, U={u_opt:.1f})"],
+            textposition="top center",
+            marker=dict(size=8, color="red", symbol="circle"),
+        )
+    )
+    fig_3d.update_layout(
+        title="Permukaan Fungsi Utilitas 3D: U(X,Y) = X · Y",
+        scene=dict(
+            xaxis_title="Makanan (X)",
+            yaxis_title="Paket Data (Y)",
+            zaxis_title="Utilitas Total (U)",
+            camera=dict(eye=dict(x=1.6, y=1.6, z=1.2)),
+        ),
+        margin=dict(l=0, r=0, b=0, t=40),
+    )
+    st.plotly_chart(fig_3d, use_container_width=True)
+    st.caption(
+        "💡 **Petunjuk Interaktif:** Putar grafik 3D di atas menggunakan kursor"
+        " mouse untuk melihat permukaan utilitas dari berbagai sudut."
+    )
+
+  with tab_2d:
+    fig_2d = go.Figure()
+    fig_2d.add_trace(
+        go.Contour(
+            z=Z_mesh,
+            x=x_range,
+            y=y_range,
+            colorscale="Viridis",
+            contours=dict(
+                showlabels=True, labelfont=dict(size=10, color="white")
+            ),
+            name="Peta Kontur Utility",
+        )
+    )
+    y_bl_2d = (m_anggaran - (px_makanan * x_range)) / py_data
+    fig_2d.add_trace(
+        go.Scatter(
+            x=x_range,
+            y=y_bl_2d,
+            mode="lines",
+            name="Garis Anggaran (BL)",
+            line=dict(color="red", width=3, dash="dash"),
+        )
+    )
+    fig_2d.add_trace(
+        go.Scatter(
+            x=[opt_x],
+            y=[opt_y],
+            mode="markers+text",
+            name="Titik Keseimbangan",
+            text=[f" E ({opt_x:.1f}, {opt_y:.1f})"],
+            textposition="top right",
+            marker=dict(
+                size=12, color="yellow", line=dict(width=2, color="black")
+            ),
+        )
+    )
+    fig_2d.update_layout(
+        title="Proyeksi Kontur 2D (Irisan Horisontal = Indifference Curve)",
+        xaxis_title="Makanan (X)",
+        yaxis_title="Paket Data (Y)",
+        xaxis=dict(range=[0, max(opt_x * 2, 4)]),
+        yaxis=dict(range=[0, max(opt_y * 2, 4)]),
+        template="plotly_white",
+    )
+    st.plotly_chart(fig_2d, use_container_width=True)
+    st.info(
+        "💡 **Kesimpulan Visual:** Irisan horizontal pada ketinggian $U^* ="
+        f" {u_opt:.1f}$ menghasilkan Kurva Indiferensi 2D yang bersinggungan"
+        " tepat di titik optimal keseimbangan konsumen."
+    )
