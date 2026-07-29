@@ -873,7 +873,7 @@ elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
 # ==========================================
 # HALAMAN: BAB 20 (SUPLEMEN MATEMATIKA - MICROSOFT MATH ENGINE)
 # ==========================================
-elif pilihan_modul == "Bab 20: Suplemen Matematika - Optimasi & FOC":
+elif pilihan_modul == "Bab 20: [Cadangan Bab 20]":
   st.title("📐 BAB 20: ENGINE OPTIMASI & PENURUNAN FOC")
   st.caption(
       "Modul Pembelajaran Interaktif Bertahap (Step-by-Step Solver) untuk"
