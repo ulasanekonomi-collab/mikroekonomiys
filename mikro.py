@@ -805,61 +805,115 @@ elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
   )
 
 # ------------------------------------------
-# PILAR PEDAGOGIS DINAMIS: PROSES FOC & PROPOSISI EKONOMI
-# ------------------------------------------
-st.markdown("---")
-st.subheader("🎓 Eksplorasi Pedagogis: Menggali Logika FOC secara Dinamis")
-st.write("Mari kita bedah bagaimana ekonom menggunakan *First-Order Conditions* (FOC) untuk menemukan informasi logis di balik pilihan optimal ini:")
+    # PILAR PEDAGOGIS DINAMIS: PROSES FOC & PROPOSISI EKONOMI
+    # ------------------------------------------
+    st.markdown("---")
+    st.subheader("🎓 Eksplorasi Pedagogis: Menggali Logika FOC secara Dinamis")
+    st.write(
+        "Mari kita bedah bagaimana ekonom menggunakan *First-Order Conditions*"
+        " (FOC) untuk menemukan informasi logis di balik pilihan optimal ini:"
+    )
 
-# Menghitung nilai matematis riil secara dinamis berdasarkan input sidebar
-mu_x_opt = opt_y  # dU/dX = Y
-mu_y_opt = opt_x  # dU/dY = X
-equi_x = mu_x_opt / px_makanan
-equi_y = mu_y_opt / py_data
-lambda_val = equi_x  # Marginal Utility of Money
+    # Menghitung nilai matematis riil secara dinamis berdasarkan input sidebar
+    mu_x_opt = opt_y  # dU/dX = Y
+    mu_y_opt = opt_x  # dU/dY = X
+    equi_x = mu_x_opt / px_makanan
+    equi_y = mu_y_opt / py_data
+    lambda_val = equi_x  # Marginal Utility of Money
 
-tab_step1, tab_step2, tab_step3 = st.tabs([
-    "1️⃣ Formulasi Lagrange", 
-    "2️⃣ Turunan Pertama (FOC)", 
-    "3️⃣ Proposisi Ekonomi Logis"
-])
+    tab_step1, tab_step2, tab_step3 = st.tabs([
+        "1️⃣ Formulasi Lagrange",
+        "2️⃣ Turunan Pertama (FOC)",
+        "3️⃣ Proposisi Ekonomi Logis",
+    ])
 
-with tab_step1:
-    st.markdown("#### **Langkah 1: Membentuk Fungsi Lagrange**")
-    st.write(f"Konsumen memaksimumkan $U(X,Y) = X \\cdot Y$ dengan batas anggaran $\\text{{Rp}}{m_anggaran:,.0f} = \\text{{Rp}}{px_makanan:,.0f}X + \\text{{Rp}}{py_data:,.0f}Y$.")
-    st.latex(rf"\mathcal{{L}}(X, Y, \lambda) = (X \cdot Y) + \lambda ({m_anggaran} - {px_makanan}X - {py_data}Y)")
-    st.info("💡 **Makna Pedagogis:** $\lambda$ (Pengali Lagrange) mewakili 'harga bayangan' atau **tambahan kepuasan untuk setiap tambahan satu rupiah anggaran**.")
+    with tab_step1:
+      st.markdown("#### **Langkah 1: Membentuk Fungsi Lagrange**")
+      st.write(
+          "Konsumen memaksimumkan $U(X,Y) = X \\cdot Y$ dengan batas anggaran"
+          f" $\\text{{Rp}}{m_anggaran:,.0f} = \\text{{Rp}}{px_makanan:,.0f}X +"
+          f" \\text{{Rp}}{py_data:,.0f}Y$."
+      )
+      st.latex(
+          r"\mathcal{L}(X, Y, \lambda) = (X \cdot Y) + \lambda ("
+          + str(m_anggaran)
+          + r" - "
+          + str(px_makanan)
+          + r"X - "
+          + str(py_data)
+          + r"Y)"
+      )
+      st.info(
+          "💡 **Makna Pedagogis:** $\\lambda$ (Pengali Lagrange) mewakili 'harga"
+          " bayangan' atau **tambahan kepuasan untuk setiap tambahan satu"
+          " rupiah anggaran**."
+      )
 
-with tab_step2:
-    st.markdown("#### **Langkah 2: Mencari Keseimbangan via Turunan Pertama (FOC)**")
-    st.write("Agar fungsi mencapai titik maksimum, turunan parsial pertama terhadap $X$, $Y$, dan $\lambda$ disamakan dengan $0$:")
-    
-    col_foc1, col_foc2 = st.columns(2)
-    with col_foc1:
-        st.latex(r"\frac{\partial \mathcal{L}}{\partial X} = Y - \lambda P_x = 0 \implies MU_x = \lambda P_x")
-        st.caption(f"Pada titik optimal: $MU_x = {mu_x_opt:.2f}$ util dari porsi ke-{opt_x:.1f} Makanan.")
-        
-    with col_foc2:
-        st.latex(r"\frac{\partial \mathcal{L}}{\partial Y} = X - \lambda P_y = 0 \implies MU_y = \lambda P_y")
-        st.caption(f"Pada titik optimal: $MU_y = {mu_y_opt:.2f}$ util dari unit ke-{opt_y:.1f} Data.")
+    with tab_step2:
+      st.markdown(
+          "#### **Langkah 2: Mencari Keseimbangan via Turunan Pertama"
+          " (FOC)**"
+      )
+      st.write(
+          "Agar fungsi mencapai titik maksimum, turunan parsial pertama terhadap"
+          " $X$, $Y$, dan $\\lambda$ disamakan dengan $0$:"
+      )
 
-with tab_step3:
-    st.markdown("#### **Langkah 3: Menggali Proposisi Ekonomi (Informasi Logis)**")
-    st.write("Dengan membagi kedua kondisi FOC di atas, ekonom memperoleh **dua proposisi utama**:")
-    
-    st.success(f"""
-    **📌 Proposisi 1: Rasio Penukaran Subjektif = Rasio Harga Pasar ($MRS = P_x / P_y$)**
-    $$MRS = \\frac{{MU_x}}{{MU_y}} = \\frac{{{mu_x_opt:.2f}}}{{{mu_y_opt:.2f}}} = {mu_x_opt/mu_y_opt:.2f}$$
-    $$\\text{{Rasio Harga}} = \\frac{{P_x}}{{P_y}} = \\frac{{{px_makanan}}}{{{py_data}}} = {px_makanan/py_data:.2f}$$
-    *Tingkat kesediaan konsumen menukar Makanan dengan Data tepat sama dengan rasio harga relatif kedua barang di pasar.*
-    """)
-    
-    st.warning(f"""
-    **📌 Proposisi 2: Prinsip Equi-Marginal Utility per Rupiah ($\lambda$)**
-    $$\\frac{{MU_x}}{{P_x}} = \\frac{{{mu_x_opt:.2f}}}{{{px_makanan}}} = {equi_x:.6f} \\text{{ util/rupiah}}$$
-    $$\\frac{{MU_y}}{{P_y}} = \\frac{{{mu_y_opt:.2f}}}{{{py_data}}} = {equi_y:.6f} \\text{{ util/rupiah}}$$
-    *Rupiah terakhir yang dibelanjakan untuk Makanan memberikan tambahan kepuasan yang **persis sama** dengan rupiah terakhir yang dibelanjakan untuk Paket Data (sebesar $\lambda = {lambda_val:.6f}$ util/rupiah).*
-    """)
+      col_foc1, col_foc2 = st.columns(2)
+      with col_foc1:
+        st.latex(
+            r"\frac{\partial \mathcal{L}}{\partial X} = Y - \lambda P_x = 0"
+            r" \implies MU_x = \lambda P_x"
+        )
+        st.caption(
+            f"Pada titik optimal: $MU_x = {mu_x_opt:.2f}$ util dari porsi"
+            f" ke-{opt_x:.1f} Makanan."
+        )
+
+      with col_foc2:
+        st.latex(
+            r"\frac{\partial \mathcal{L}}{\partial Y} = X - \lambda P_y = 0"
+            r" \implies MU_y = \lambda P_y"
+        )
+        st.caption(
+            f"Pada titik optimal: $MU_y = {mu_y_opt:.2f}$ util dari unit"
+            f" ke-{opt_y:.1f} Data."
+        )
+
+    with tab_step3:
+      st.markdown(
+          "#### **Langkah 3: Menggali Proposisi Ekonomi (Informasi Logis)**"
+      )
+      st.write(
+          "Dengan membagi kedua kondisi FOC di atas, ekonom memperoleh"
+          " **dua proposisi utama**:"
+      )
+
+      st.success(
+          "**📌 Proposisi 1: Rasio Penukaran Subjektif = Rasio Harga Pasar ($MRS"
+          " = P_x / P_y$)**\n\n"
+          f"$$MRS = \\frac{{MU_x}}{{MU_y}} = \\frac{{{mu_x_opt:.2f}}}{{{mu_y_opt:.2f}}} = {mu_x_opt/mu_y_opt:.2f}$$\n\n"
+          f"$$\\text{{Rasio Harga}} = \\frac{{P_x}}{{P_y}} = \\frac{{{px_makanan}}}{{{py_data}}} = {px_makanan/py_data:.2f}$$\n\n"
+          "*Tingkat kesediaan konsumen menukar Makanan dengan Data tepat sama"
+          " dengan rasio harga relatif kedua barang di pasar.*"
+      )
+
+      st.warning(
+          "**📌 Proposisi 2: Prinsip Equi-Marginal Utility per Rupiah"
+          " ($\lambda$)**\n\n"
+          f"$$\\frac{{MU_x}}{{P_x}} = \\frac{{{mu_x_opt:.2f}}}{{{px_makanan}}} = {equi_x:.6f} \\text{{ util/rupiah}}$$\n\n"
+          f"$$\\frac{{MU_y}}{{P_y}} = \\frac{{{mu_y_opt:.2f}}}{{{py_data}}} = {equi_y:.6f} \\text{{ util/rupiah}}$$\n\n"
+          "*Rupiah terakhir yang dibelanjakan untuk Makanan memberikan"
+          " tambahan kepuasan yang **persis sama** dengan rupiah terakhir"
+          f" yang dibelanjakan untuk Paket Data (sebesar $\\lambda ="
+          f" {lambda_val:.6f}$ util/rupiah).*"
+      )
+
+    # ------------------------------------------
+    # 4. KUIS EVALUASI BAB 4
+    # ------------------------------------------
+    st.markdown("---")
+    st.subheader("📝 Kuis Reflektif & Evaluasi Pemahaman (Bab 4)")
 
   # ------------------------------------------
   # 4. KUIS EVALUASI BAB 4
