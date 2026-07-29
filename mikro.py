@@ -873,7 +873,7 @@ elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
 # ==========================================
 # HALAMAN: BAB 20 (SUPLEMEN MATEMATIKA: OPTIMASI & FOC)
 # ==========================================
-elif pilihan_modul == "Bab 20: Suplemen Matematika - Optimasi & FOC":
+elif pilihan_modul == "Bab 20: [Cadangan Bab 20]":
     st.title("📐 BAB 20: SUPLEMEN MATEMATIKA - OPTIMASI & FOC")
     st.caption("Modul Pengayaan Kalkulus: Penurunan Lagrange, First-Order Conditions (FOC), dan Proposisi Ekonomi")
     st.markdown("---")
