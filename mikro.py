@@ -1079,30 +1079,42 @@ elif pilihan_modul == "Bab 20: [Cadangan Bab 20]":
           " memberikan tambahan manfaat yang **persis sama**!"
       )
 # ==========================================
-# HALAMAN: LAMPIRAN A (ANEKSASI VISUALISASI UTILITY)
+# HALAMAN: LAMPIRAN A (ANEKSASI VISUALISASI 3D & 2D)
 # ==========================================
 elif (
     pilihan_modul == "Lampiran A: Eksplorasi Visual 3D & Peta Kontur Utilitas"
 ):
-  st.title("🗺️ LAMPIRAN A: EKSPLORASI GEOMETRI UTILITAS & PILIHAN KONSUMEN")
+  st.title("🗺️ LAMPIRAN A: EKSPLORASI GEOMETRI UTILITAS 3D & 2D")
   st.caption(
-      "Aneksasi Naratif & Visual: Menghubungkan Abstraksi Subjektif Manusia"
-      " dengan Batasan Anggaran Nyata"
+      "Aneksasi Konseptual & Visual: Memahami Hubungan Barang, Jasa, dan"
+      " Utilitas"
   )
   st.markdown("---")
 
-  # --- SIDEBAR PARAMETER ---
-  st.sidebar.header("⚙️ Laboratorium Keputusan Konsumen")
-  st.sidebar.markdown(
-      "Ubah batasan riil dunia nyata (pendapatan & harga) untuk melihat"
-      " bagaimana titik optimum bergeser di peta kepuasan."
-  )
+  # --- NARASI KONSEPTUAL & FILOSOFIS ---
+  st.markdown("""
+    ### 🎭 Peta di Dalam Benak Konsumen: Barang, Jasa, dan Utilitas
+    
+    Setiap hari kita dikelilingi oleh ribuan pilihan barang dan jasa—sepiring makanan, paket data internet, hingga jam hiburan. Namun, dalam kacamata ekonomi mikro, **manusia tidak sekadar membeli barang atau jasa itu sendiri, melainkan membeli kepuasan (*utility*) yang terkandung di dalamnya.**
+    
+    Utilitas adalah jembatan yang menghubungkan *dunia fisik barang/jasa* (yang bisa dihitung dalam kg, liter, atau unit) dengan *dunia psikologis manusia* (rasa kenyang, senang, atau nyaman).
+    
+    #### 1. Utilitas Khas bersifat Subjektif
+    Dua orang yang mengonsumsi barang dalam jumlah yang sama persis bisa mendapatkan nilai utilitas yang sangat berlainan. Oleh karena itu, fungsi utilitas $U = f(X,Y)$ pada hakikatnya adalah **peta preferensi unik** milik seorang individu.
+    
+    #### 2. Pola Interaksi Antar Barang
+    Dalam kehidupan nyata, utilitas suatu barang dipengaruhi oleh keberadaan barang lainnya:
+    * **Saling Menopang (Interaksi Multiplikatif - Cobb-Douglas):** $U = X \\cdot Y$. Makanan ($X$) dan Paket Data ($Y$) saling menguatkan. Perut kenyang tanpa kuota terasa membosankan, namun punya kuota melimpah saat kelaparan juga menyiksa. Kepuasan tertinggi dicapai pada komposisi seimbang.
+    * **Saling Menggantikan (Substitusi):** $U = aX + bY$. Barang yang fungsi atau perannya dapat saling menggantikan fleksibel secara linier.
+    * **Pasangan Kaku (Komplementer Sempurna - Leontief):** $U = \\min(aX, bY)$. Barang yang hanya berguna jika dikonsumsi bersamaan dalam proporsi spesifik (misal: sepatu kanan dan sepatu kiri).
+    
+    ---
+    """)
+
+  # Sidebar Parameter Input
+  st.sidebar.header("⚙️ Parameter Lampiran A")
   m_anggaran = st.sidebar.number_input(
-      "Pendapatan / Anggaran M (Rp):",
-      min_value=5000,
-      value=20000,
-      step=2500,
-      key="la_m",
+      "Pendapatan M (Rp):", min_value=5000, value=20000, step=2500, key="la_m"
   )
   px_makanan = st.sidebar.number_input(
       "Harga Makanan Px (Rp):", min_value=1000, value=5000, step=1000, key="la_px"
@@ -1115,39 +1127,31 @@ elif (
       key="la_py",
   )
 
-  # Nilai Komputasi Optimum
+  # Nilai Komputasi
   opt_x = m_anggaran / (2 * px_makanan) if px_makanan > 0 else 0.0
   opt_y = m_anggaran / (2 * py_data) if py_data > 0 else 0.0
   u_opt = opt_x * opt_y
-  mrs_opt = (
-      px_makanan / py_data if py_data > 0 else 0.0
-  )  # MRS = MUx/MUy = Y/X = Px/Py
 
-  # --- INTRO REFLEKSI FILOSOFIS ---
   st.markdown("""
-    ### 💡 Mengapa Kita Mengabstraksikan Kepuasan?
-    Manusia tidak mengonsumsi angka matematis; manusia mengonsumsi **makanan ($X$)** untuk rasa kenyang dan **paket data ($Y$)** untuk konektivitas. 
-    Namun, untuk memahami **bagaimana manusia kompromi (*trade-off*)**, ekonom membuat **abstraksi fungsi utilitas** $U = X \\cdot Y$:
-    * **Dimensi Subjektif (3D):** Menggambarkan "bukit kepuasan" psikologis yang semakin tinggi jika barang dikonsumsi lebih banyak.
-    * **Dimensi Realitas (2D):** Memotong bukit kepuasan tersebut pada tingkat kepuasan yang sama (*Kurva Indiferensi*), lalu mempertemukannya dengan **Garis Anggaran (*Budget Line*)**.
+    ### 📐 Dari Psikologi Subjektif ke Geometri 3D & 2D
+    Bagaimana kita memindahkan fenomena psikologis ini ke dalam grafik?
+    
+    * **Permukaan 3D:** Menggambarkan bukit kepuasan di mana sumbu $X$ dan $Y$ adalah barang/jasa, sedangkan tinggi permukaan ($Z$) adalah tingkat utilitas total $U(X,Y)$.
+    * **Proyeksi Kontur 2D:** Menunjukkan **Kurva Indiferensi (*Indifference Curve*)**, yaitu irisan mendatar pada ketinggian bukit utilitas tertentu.
     """)
 
-  # --- GRID DATA VISUAL ---
+  # Grid Data 3D & 2D
   x_range = np.linspace(0.1, max(opt_x * 2.2, 5), 40)
   y_range = np.linspace(0.1, max(opt_y * 2.2, 5), 40)
   X_mesh, Y_mesh = np.meshgrid(x_range, y_range)
-  Z_mesh = X_mesh * Y_mesh  # U = X * Y
+  Z_mesh = X_mesh * Y_mesh  # Contoh Kasus Interaksi Cobb-Douglas U = X * Y
 
-  tab_3d, tab_2d, tab_naratif = st.tabs([
-      "🏔️ 1. Permukaan Utilitas 3D (Psikologi)",
-      "🗺️ 2. Peta Kontur & Garis Anggaran (Kompromi)",
-      "📖 3. Analisis Ekonomi & Refleksi",
-  ])
+  tab_3d, tab_2d = st.tabs(
+      ["🏔️ Permukaan Utilitas 3D (Surface)", "🗺️ Proyeksi Kontur 2D (IC & BL)"]
+  )
 
-  # --- TAB 1: VISUAL 3D ---
   with tab_3d:
     fig_3d = go.Figure()
-    # Surface Bukit Utilitas
     fig_3d.add_trace(
         go.Surface(
             z=Z_mesh,
@@ -1155,46 +1159,39 @@ elif (
             y=Y_mesh,
             colorscale="Viridis",
             opacity=0.85,
-            name="Permukaan Kepuasan U(X,Y)",
+            name="Fungsi Utilitas U(X,Y)",
         )
     )
-    # Titik Puncak Optimum
     fig_3d.add_trace(
         go.Scatter3d(
             x=[opt_x],
             y=[opt_y],
             z=[u_opt],
             mode="markers+text",
-            name="Titik Kepuasan Maksimal Riil",
-            text=[f" Optimum Utilitas ({u_opt:.1f})"],
+            name="Puncak Keseimbangan",
+            text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f}, U={u_opt:.1f})"],
             textposition="top center",
             marker=dict(size=8, color="red", symbol="circle"),
         )
     )
     fig_3d.update_layout(
-        title=(
-            "Bukit Kepuasan 3D: Hubungan Antara Makanan (X), Paket Data (Y), dan"
-            " Utilitas Total (U)"
-        ),
+        title="Permukaan Bukit Utilitas 3D: U(X,Y) = X · Y",
         scene=dict(
             xaxis_title="Makanan (X)",
             yaxis_title="Paket Data (Y)",
-            zaxis_title="Tingkat Kepuasan (U)",
+            zaxis_title="Utilitas Total (U)",
             camera=dict(eye=dict(x=1.6, y=1.6, z=1.2)),
         ),
         margin=dict(l=0, r=0, b=0, t=40),
     )
     st.plotly_chart(fig_3d, use_container_width=True)
     st.caption(
-        "💡 **Refleksi Visual:** Rotasi grafik 3D ini. Semakin tinggi Anda memanjat"
-        " bukit, semakin tinggi kepuasan ($U$). Tetapi ingat, budget dompet"
-        " membatasi seberapa tinggi Anda boleh memanjat!"
+        "💡 **Petunjuk Interaktif:** Putar grafik 3D di atas menggunakan kursor"
+        " mouse untuk melihat permukaan 'bukit kepuasan' dari berbagai sudut."
     )
 
-  # --- TAB 2: PROYEKSI 2D ---
   with tab_2d:
     fig_2d = go.Figure()
-    # Peta Kontur (IC)
     fig_2d.add_trace(
         go.Contour(
             z=Z_mesh,
@@ -1207,24 +1204,22 @@ elif (
             name="Peta Kontur Utility",
         )
     )
-    # Garis Anggaran (Budget Line)
     y_bl_2d = (m_anggaran - (px_makanan * x_range)) / py_data
     fig_2d.add_trace(
         go.Scatter(
             x=x_range,
             y=y_bl_2d,
             mode="lines",
-            name="Garis Anggaran (Batas Dompet)",
+            name="Garis Anggaran (BL)",
             line=dict(color="red", width=3, dash="dash"),
         )
     )
-    # Titik Bersinggungan (Optimum)
     fig_2d.add_trace(
         go.Scatter(
             x=[opt_x],
             y=[opt_y],
             mode="markers+text",
-            name="Keseimbangan Konsumen (E)",
+            name="Titik Keseimbangan",
             text=[f" E ({opt_x:.1f}, {opt_y:.1f})"],
             textposition="top right",
             marker=dict(
@@ -1233,35 +1228,16 @@ elif (
         )
     )
     fig_2d.update_layout(
-        title="Proyeksi Kontur 2D: Irisan Horizontal Permukaan Utilitas vs Garis Anggaran",
-        xaxis_title="Makanan X (Porsi)",
-        yaxis_title="Paket Data Y (GB)",
+        title="Proyeksi Kontur 2D (Irisan Horisontal = Indifference Curve)",
+        xaxis_title="Makanan (X)",
+        yaxis_title="Paket Data (Y)",
         xaxis=dict(range=[0, max(opt_x * 2, 4)]),
         yaxis=dict(range=[0, max(opt_y * 2, 4)]),
         template="plotly_white",
     )
     st.plotly_chart(fig_2d, use_container_width=True)
-    st.success(
-        f"🎯 **Titik Persinggungan Keseimbangan:** Pada tingkat pendapatan Rp"
-        f" {m_anggaran:,.0f}, kombinasi paling optimal adalah membeli **{opt_x:.2f}"
-        f" porsi Makanan** dan **{opt_y:.2f} GB Paket Data**, menghasilkan"
-        f" utilitas maksimal sebesar **{u_opt:.2f} util**."
+    st.info(
+        "💡 **Kesimpulan Visual:** Irisan horizontal pada ketinggian bukit"
+        f" $U^* = {u_opt:.1f}$ menghasilkan Kurva Indiferensi 2D yang"
+        " bersinggungan tepat di titik optimal keseimbangan konsumen."
     )
-
-  # --- TAB 3: NARASI NALAR EKONOMI ---
-  with tab_naratif:
-    st.markdown("### 🔍 Mengapa Titik Ini Disebut Optimal?")
-    st.markdown(f"""
-        Berdasarkan perhitungan FOC dan kaidah ekonomi mikro yang kita pelajari di Bab 20:
-
-        1. **Dua Keinginan yang Saling Menopang ($U = X \\cdot Y$):**
-           Fungsi utilitas Cobb-Douglas ini menunjukkan bahwa makanan dan paket data saling melengkapi secara intuitif. Konsumen tidak akan memilih $X=0$ atau $Y=0$ karena kepuasan totalnya akan menjadi nol ($U = 0$).
-
-        2. **Laju Subtitusi Marginal ($MRS$):**
-           Di titik keseimbangan $E({opt_x:.2f}, {opt_y:.2f})$, nilai $MRS$ (rasio kerelaan mengorbankan $Y$ demi $X$) adalah persis sama dengan rasio harga di pasar ($P_x / P_y$):
-           $$MRS = \\frac{{MU_x}}{{MU_y}} = \\frac{{Y}}{{X}} = \\frac{{{opt_y:.2f}}}{{{opt_x:.2f}}} = {mrs_opt:.2f}$$
-           Artinya, rasio harga pasar $P_x/P_y = {px_makanan}/{py_data} = {mrs_opt:.2f}$ cocok secara sempurna dengan preferensi subjektif konsumen!
-
-        3. **Nilai Filosofis Abstraksi:**
-           Grafik dan rumus ini bukan sekadar hitungan di atas kertas, melainkan cermin bagaimana manusia rasional secara tidak sadar selalu menyeimbangkan antara **keinginan pribadi ($MRS$)** dan **kenyataan harga pasar ($P_x/P_y$)**.
-        """)
