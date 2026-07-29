@@ -871,78 +871,209 @@ elif pilihan_modul == "Bab 4: Ketika Konsumen Menemukan Pilihan Terbaik":
       else:
         st.info(f"👍 **Skor Anda: {skor_b4} / 100** — Coba tinjau kembali grafik persinggungan di atas.")
 # ==========================================
-# HALAMAN: BAB 20 (SUPLEMEN MATEMATIKA: OPTIMASI & FOC)
+# HALAMAN: BAB 20 (SUPLEMEN MATEMATIKA - MICROSOFT MATH ENGINE)
 # ==========================================
-elif pilihan_modul == "Bab 20: [Cadangan Bab 20]":
-    st.title("📐 BAB 20: SUPLEMEN MATEMATIKA - OPTIMASI & FOC")
-    st.caption("Modul Pengayaan Kalkulus: Penurunan Lagrange, First-Order Conditions (FOC), dan Proposisi Ekonomi")
-    st.markdown("---")
+elif pilihan_modul == "Bab 20: Suplemen Matematika - Optimasi & FOC":
+  st.title("📐 BAB 20: ENGINE OPTIMASI & PENURUNAN FOC")
+  st.caption(
+      "Modul Pembelajaran Interaktif Bertahap (Step-by-Step Solver) untuk"
+      " Kalkulus Ekonomi"
+  )
+  st.markdown("---")
 
-    # 1. PARAMETER DYNAMIC INPUT FOR MATHEMATICAL DEMONSTRATION
-    st.sidebar.header("⚙️ Parameter Lab FOC (Bab 20)")
-    m_anggaran = st.sidebar.number_input("Pendapatan M (Rp):", min_value=5000, value=20000, step=2500, key="b20_m")
-    px_makanan = st.sidebar.number_input("Harga Makanan Px (Rp):", min_value=1000, value=5000, step=1000, key="b20_px")
-    py_data = st.sidebar.number_input("Harga Paket Data Py (Rp):", min_value=1000, value=10000, step=1000, key="b20_py")
+  # ------------------------------------------
+  # 1. PARAMETER DINAMIS INPUT
+  # ------------------------------------------
+  st.sidebar.header("⚙️ Parameter Lab FOC (Bab 20)")
+  m_anggaran = st.sidebar.number_input(
+      "Pendapatan M (Rp):", min_value=5000, value=20000, step=2500, key="b20_m"
+  )
+  px_makanan = st.sidebar.number_input(
+      "Harga Makanan Px (Rp):",
+      min_value=1000,
+      value=5000,
+      step=1000,
+      key="b20_px",
+  )
+  py_data = st.sidebar.number_input(
+      "Harga Paket Data Py (Rp):",
+      min_value=1000,
+      value=10000,
+      step=1000,
+      key="b20_py",
+  )
 
-    # Nilai optimal
-    opt_x = m_anggaran / (2 * px_makanan) if px_makanan > 0 else 0.0
-    opt_y = m_anggaran / (2 * py_data) if py_data > 0 else 0.0
-    
-    mu_x_opt = opt_y
-    mu_y_opt = opt_x
-    equi_x = mu_x_opt / px_makanan
-    equi_y = mu_y_opt / py_data
-    lambda_val = equi_x
+  # Hitung Nilai Komputasi
+  opt_x = m_anggaran / (2 * px_makanan) if px_makanan > 0 else 0.0
+  opt_y = m_anggaran / (2 * py_data) if py_data > 0 else 0.0
+  mu_x_opt = opt_y
+  mu_y_opt = opt_x
+  equi_x = mu_x_opt / px_makanan
+  equi_y = mu_y_opt / py_data
+  lambda_val = equi_x
 
-    st.subheader("💡 Mengapa Ekonom Menggunakan FOC?")
-    st.write("""
-    Tujuan ekonom mencari *First-Order Conditions* (FOC) bukan sekadar untuk menghitung angka $X$ dan $Y$. 
-    Matematika digunakan sebagai bahasa presisi untuk menggali **informasi logis (proposisi)** di balik keputusan manusia saat dihadapkan pada kelangkaan.
-    """)
+  # ------------------------------------------
+  # 2. INISIALISASI SESSION STATE UNTUK STEPPER
+  # ------------------------------------------
+  if "foc_step" not in st.session_state:
+    st.session_state.foc_step = 1
 
-    # 2. PILAR PEDAGOGIS TABULASI FOC
-    st.markdown("---")
-    st.subheader("🎓 Bedah Langkah Demi Langkah (Step-by-Step FOC Engine)")
+  total_steps = 4
 
-    tab_step1, tab_step2, tab_step3 = st.tabs([
-        "1️⃣ Formulasi Lagrange", 
-        "2️⃣ Turunan Pertama (FOC)", 
-        "3️⃣ Proposisi Ekonomi Logis"
-    ])
+  # Tombol Kontrol Navigasi Ala Microsoft Math
+  st.subheader("🔢 Microsoft Math Style Step-by-Step Solver")
 
-    with tab_step1:
-        st.markdown("#### **Langkah 1: Membentuk Fungsi Lagrange**")
-        st.write(f"Konsumen memaksimumkan fungsi utilitas $U(X,Y) = X \\cdot Y$ dengan kendala anggaran $\\text{{Rp}}{m_anggaran:,.0f} = \\text{{Rp}}{px_makanan:,.0f}X + \\text{{Rp}}{py_data:,.0f}Y$.")
-        st.latex(rf"\mathcal{{L}}(X, Y, \lambda) = (X \cdot Y) + \lambda ({m_anggaran} - {px_makanan}X - {py_data}Y)")
-        st.info("💡 **Makna Pedagogis:** Pengali Lagrange ($\lambda$) mencerminkan *marginal utility of money*, yaitu besarnya tambahan kepuasan untuk setiap tambahan satu rupiah pendapatan.")
+  col_nav1, col_nav2, col_nav3 = st.columns([2, 3, 2])
 
-    with tab_step2:
-        st.markdown("#### **Langkah 2: Membentuk Kondisi Tingkat Pertama (FOC)**")
-        st.write("Agar fungsi mencapai titik maksimum, seluruh turunan parsial pertama disamakan dengan nol ($\partial \mathcal{L} = 0$):")
-        
-        col_foc1, col_foc2 = st.columns(2)
-        with col_foc1:
-            st.latex(r"\frac{\partial \mathcal{L}}{\partial X} = Y - \lambda P_x = 0 \implies MU_x = \lambda P_x")
-            st.caption(f"Pada titik optimal: $MU_x = {mu_x_opt:.2f}$ util (turunan terhadap X).")
-            
-        with col_foc2:
-            st.latex(r"\frac{\partial \mathcal{L}}{\partial Y} = X - \lambda P_y = 0 \implies MU_y = \lambda P_y")
-            st.caption(f"Pada titik optimal: $MU_y = {mu_y_opt:.2f}$ util (turunan terhadap Y).")
+  with col_nav1:
+    if st.button("⬅️ Langkah Sebelumnya", use_container_width=True):
+      if st.session_state.foc_step > 1:
+        st.session_state.foc_step -= 1
+        st.rerun()
 
-    with tab_step3:
-        st.markdown("#### **Langkah 3: Menggali Proposisi Ekonomi (Informasi Logis)**")
-        st.write("Dari kondisi FOC di atas, ekonom mengekstrak **dua proposisi fundamental**:")
-        
-        st.success(f"""
-        **📌 Proposisi 1: Kesamaan Rasio Penukaran Subjektif dan Objektif ($MRS = P_x / P_y$)**
-        $$MRS = \\frac{{MU_x}}{{MU_y}} = \\frac{{{mu_x_opt:.2f}}}{{{mu_y_opt:.2f}}} = {mu_x_opt/mu_y_opt:.2f}$$
-        $$\\text{{Rasio Harga Pasar}} = \\frac{{P_x}}{{P_y}} = \\frac{{{px_makanan}}}{{{py_data}}} = {px_makanan/py_data:.2f}$$
-        *Tingkat kesediaan subjektif konsumen menukar barang ($MRS$) persis setara dengan tingkat penukaran objektif di pasar ($\frac{{P_x}}{{P_y}}$).*
-        """)
-        
-        st.warning(f"""
-        **📌 Proposisi 2: Prinsip Equi-Marginal Utility per Rupiah ($\lambda$)**
-        $$\\frac{{MU_x}}{{P_x}} = \\frac{{{mu_x_opt:.2f}}}{{{px_makanan}}} = {equi_x:.6f} \\text{{ util/rupiah}}$$
-        $$\\frac{{MU_y}}{{P_y}} = \\frac{{{mu_y_opt:.2f}}}{{{py_data}}} = {equi_y:.6f} \\text{{ util/rupiah}}$$
-        *Rupiah terakhir yang dibelanjakan untuk Makanan memberikan tambahan kepuasan yang **persis sama** dengan rupiah terakhir yang dibelanjakan untuk Paket Data (sebesar $\lambda = {lambda_val:.6f}$ util/rupiah).*
-        """)
+  with col_nav2:
+    st.progress(
+        st.session_state.foc_step / total_steps,
+        text=f"Progres: Langkah {st.session_state.foc_step} dari {total_steps}",
+    )
+
+  with col_nav3:
+    if st.button("➡️ Langkah Selanjutnya", use_container_width=True):
+      if st.session_state.foc_step < total_steps:
+        st.session_state.foc_step += 1
+        st.rerun()
+
+  st.markdown("---")
+
+  # ------------------------------------------
+  # 3. KONTEN MASING-MASING LANGKAH (STEP BY STEP)
+  # ------------------------------------------
+
+  # --- LANGKAH 1 ---
+  if st.session_state.foc_step >= 1:
+    with st.status(
+        "📌 **Langkah 1: Formulasi Masalah Optimasi & Fungsi Lagrange**",
+        expanded=(st.session_state.foc_step == 1),
+    ):
+      st.markdown("**1. Masalah Keputusan Konsumen:**")
+      st.latex(
+          r"\max_{X,Y} U(X,Y) = X \cdot Y \quad \text{dengan kendala} \quad"
+          f" {m_anggaran:,} = {px_makanan:,}X + {py_data:,}Y"
+      )
+
+      st.markdown("**2. Penggabungan ke Fungsi Pengali Lagrange ($\mathcal{L}$):**")
+      st.latex(
+          r"\mathcal{L}(X, Y, \lambda) = X \cdot Y + \lambda ("
+          + str(m_anggaran)
+          + r" - "
+          + str(px_makanan)
+          + r"X - "
+          + str(py_data)
+          + r"Y)"
+      )
+
+      st.info(
+          "💡 **Keterangan & Logika Ekonomi:** Fungsi Lagrange menyatukan"
+          " 'keinginan' ($XY$) dan 'keterbatasan anggaran' ke dalam satu"
+          " persamaan matematis utuh. Parameter $\\lambda$ merepresentasikan"
+          " 'harga bayangan' (*shadow price*) atau besarnya kepuasan ekstra"
+          " jika anggaran konsumen bertambah Rp1."
+      )
+
+  # --- LANGKAH 2 ---
+  if st.session_state.foc_step >= 2:
+    with st.status(
+        "📌 **Langkah 2: Menurunkan First-Order Conditions (FOC)**",
+        expanded=(st.session_state.foc_step == 2),
+    ):
+      st.markdown(
+          "Untuk mencari titik puncaknya, kita hitung turunan parsial terhadap"
+          " $X$, $Y$, dan $\lambda$, lalu samakan dengan nol ($0$):"
+      )
+
+      col_f1, col_f2 = st.columns(2)
+      with col_f1:
+        st.markdown("**Turunan terhadap X ($\partial \mathcal{L} / \partial X$):**")
+        st.latex(
+            r"\frac{\partial \mathcal{L}}{\partial X} = Y - \lambda P_x = 0"
+            r" \implies Y = \lambda P_x \quad \text{(Persamaan 1)}"
+        )
+      with col_f2:
+        st.markdown("**Turunan terhadap Y ($\partial \mathcal{L} / \partial Y$):**")
+        st.latex(
+            r"\frac{\partial \mathcal{L}}{\partial Y} = X - \lambda P_y = 0"
+            r" \implies X = \lambda P_y \quad \text{(Persamaan 2)}"
+        )
+
+      st.info(
+          "💡 **Keterangan & Logika Ekonomi:** Turunan parsial terhadap $X$"
+          " menghasilkan *Marginal Utility* barang X ($MU_x = Y$), sedangkan"
+          " turunan terhadap $Y$ menghasilkan *Marginal Utility* barang Y"
+          " ($MU_y = X$). Syarat FOC menuntut agar batas tambahan manfaat"
+          " seimbang dengan batas biayanya."
+      )
+
+  # --- LANGKAH 3 ---
+  if st.session_state.foc_step >= 3:
+    with st.status(
+        "📌 **Langkah 3: Mengeliminasi $\lambda$ dan Membuktikan Proposisi"
+        " MRS**",
+        expanded=(st.session_state.foc_step == 3),
+    ):
+      st.markdown(
+          "Bagi Persamaan (1) dengan Persamaan (2) untuk menghilangkan pengali"
+          " $\lambda$:"
+      )
+      st.latex(
+          r"\frac{Y}{X} = \frac{\lambda P_x}{\lambda P_y} \implies"
+          r" \frac{MU_x}{MU_y} = \frac{P_x}{P_y}"
+      )
+
+      st.markdown(
+          "Substitusikan parameter harga angka nyata dari pilihan Anda:"
+      )
+      st.latex(
+          rf"MRS = \frac{{Y}}{{X}} = \frac{{{px_makanan:,}}}{{{py_data:,}}} ="
+          f" {px_makanan/py_data:.2f}"
+      )
+
+      st.success(
+          "📌 **PROPOSISI 1 (Keseimbangan Subjektif & Objektif):**\n\n"
+          f"Konsumen akan berada pada titik optimal jika rasio penukaran"
+          f" subjektifnya ($MRS$) bernilai **{px_makanan/py_data:.2f}**, persis"
+          f" setara dengan rasio harga relatif kedua barang di pasar ($P_x /"
+          f" P_y = {px_makanan/py_data:.2f}$)."
+      )
+
+  # --- LANGKAH 4 ---
+  if st.session_state.foc_step >= 4:
+    with st.status(
+        "📌 **Langkah 4: Evaluasi Solusi Akhir ($X^*, Y^*$) & Equi-Marginal"
+        " Utility**",
+        expanded=(st.session_state.foc_step == 4),
+    ):
+      st.markdown(
+          "Substitusikan hubungan $Y = \\left(\\frac{P_x}{P_y}\\right)X$ ke"
+          " dalam kendala anggaran $M = P_x X + P_y Y$:"
+      )
+      st.latex(
+          r"M = P_x X + P_y \left(\frac{P_x}{P_y}X\right) = 2 P_x X \implies"
+          r" X^* = \frac{M}{2 P_x}"
+      )
+
+      st.markdown("**Hasil Komputasi Angka Optimal:**")
+      col_res1, col_res2, col_res3 = st.columns(3)
+      with col_res1:
+        st.metric("Makanan Optimal (X*)", f"{opt_x:.1f} Porsi")
+      with col_res2:
+        st.metric("Paket Data Optimal (Y*)", f"{opt_y:.1f} Unit")
+      with col_res3:
+        st.metric("Marginal Utility Money (λ)", f"{lambda_val:.6f}")
+
+      st.warning(
+          "📌 **PROPOSISI 2 (Equi-Marginal Utility per Rupiah):**\n\n"
+          f"• Utility per Rupiah Makanan ($MU_x / P_x$): **{equi_x:.6f} util/Rp**\n\n"
+          f"• Utility per Rupiah Data ($MU_y / P_y$): **{equi_y:.6f} util/Rp**\n\n"
+          "Terbukti bahwa pada titik ini, rupiah terakhir yang dikeluarkan"
+          " memberikan tambahan manfaat yang **persis sama**!"
+      )
