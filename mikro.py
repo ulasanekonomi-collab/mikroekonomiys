@@ -1207,12 +1207,20 @@ elif (
     fig_3d.update_layout(
         title=f"Bukit Utilitas 3D: {tipe_fungsi}",
         scene=dict(
-            xaxis_title="Barang X",
-            yaxis_title="Barang Y",
-            zaxis_title="Utilitas (U)",
-            camera=dict(eye=dict(x=1.6, y=1.6, z=1.2)),
+            xaxis_title="Barang X (Makanan)",
+            yaxis_title="Barang Y (Paket Data)",
+            zaxis_title="Utilitas Total (U)",
+            # SETTING SUDUT PANDANG KAMERA TERBAIK:
+            camera=dict(
+                eye=dict(
+                    x=1.8, y=-1.8, z=1.4
+                )  # Mengangkat kamera ke atas-depan-kanan
+            ),
+            aspectratio=dict(
+                x=1, y=1, z=0.8
+            ),  # Proporsi tinggi Z agar bukitnya makin kelihatan
         ),
-        margin=dict(l=0, r=0, b=0, t=40),
+        margin=dict(l=10, r=10, b=10, t=40),
     )
     st.plotly_chart(fig_3d, use_container_width=True)
 
