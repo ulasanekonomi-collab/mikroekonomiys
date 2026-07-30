@@ -1280,3 +1280,87 @@ elif (
         template="plotly_white",
     )
     st.plotly_chart(fig_2d, use_container_width=True)
+# ==========================================
+# HALAMAN: LAMPIRAN B (TURUNAN MU, MRS, & KESEIMBANGAN)
+# ==========================================
+elif (
+    pilihan_modul
+    == "Lampiran B: Matriks Sifat Fungsi Utilitas & Keseimbangan"
+):
+  st.title("Ekstraksi Matematika: Turunan Pertama (MU) & MRS")
+  st.caption(
+      "Membongkar alasan mengapa Cobb-Douglas menjadi standar utama"
+      " keseimbangan konsumen."
+  )
+  st.markdown("---")
+
+  st.markdown("""
+    ### 💡 Mengapa Kurva Indiferensi (IC) Berbentuk Cembung?
+    Bentuk kurva indiferensi ditentukan oleh **Marginal Rate of Substitution (MRS)**, yaitu rasio dari turunan parsial pertama (*Marginal Utility*):
+    """)
+
+  st.latex(r"MRS_{X,Y} = -\frac{dY}{dX} = \frac{MU_X}{MU_Y}")
+
+  # Tab Komparasi 3 Sifat Fungsi
+  tab_cd, tab_sub, tab_leo = st.tabs([
+      "1. Cobb-Douglas (Cembung)",
+      "2. Substitusi Linier (Garis Lurus)",
+      "3. Leontief (Siku 90°)",
+  ])
+
+  with tab_cd:
+    st.subheader("Fungsi Utilitas: $U(X,Y) = X^\\alpha Y^\\beta$")
+    col1, col2 = st.columns(2)
+    with col1:
+      st.markdown("""
+            **1. Turunan Pertama (Marginal Utility):**
+            * $MU_X = \\frac{\\partial U}{\\partial X} = \\alpha X^{\\alpha-1} Y^\\beta$
+            * $MU_Y = \\frac{\\partial U}{\\partial Y} = \\beta X^\\alpha Y^{\\beta-1}$
+            
+            **2. Sifat MRS:**
+            * $MRS = \\frac{\\alpha Y}{\\beta X}$ (Tergantung pada rasio $X$ dan $Y$).
+            * **Diminishing MRS:** Makin banyak $X$, nilai MRS makin kecil.
+            """)
+    with col2:
+      st.success("""
+            **Jenis Solusi Keseimbangan:**  
+            **Interior Solution** (Persinggungan Mulus).  
+            Konsumen mengonsumsi kombinasi kedua barang secara seimbang sesuai rasio anggaran.
+            """)
+
+  with tab_sub:
+    st.subheader("Fungsi Utilitas: $U(X,Y) = aX + bY$")
+    col1, col2 = st.columns(2)
+    with col1:
+      st.markdown("""
+            **1. Turunan Pertama (Marginal Utility):**
+            * $MU_X = a$ (Konstan)
+            * $MU_Y = b$ (Konstan)
+            
+            **2. Sifat MRS:**
+            * $MRS = \\frac{a}{b}$ (Konstan di semua titik).
+            """)
+    with col2:
+      st.warning("""
+            **Jenis Solusi Keseimbangan:**  
+            **Corner Solution** (Solusi Pojok).  
+            Konsumen akan menghabiskan seluruh anggaran hanya pada satu jenis barang ($X$ saja atau $Y$ saja).
+            """)
+
+  with tab_leo:
+    st.subheader("Fungsi Utilitas: $U(X,Y) = \\min(aX, bY)$")
+    col1, col2 = st.columns(2)
+    with col1:
+      st.markdown("""
+            **1. Turunan Pertama (Marginal Utility):**
+            * $MU = 0$ jika salah satu barang berlebih tanpa pasangan pasnya.
+            
+            **2. Sifat MRS:**
+            * $MRS = \\infty$ pada segmen vertikal, $0$ pada segmen horizontal, dan *undefined* di titik sudut.
+            """)
+    with col2:
+      st.info("""
+            **Jenis Solusi Keseimbangan:**  
+            **Fixed-Ratio Solution** (Titik Siku).  
+            Keseimbangan selalu tercapai tepat pada titik sudut $aX = bY$, tidak peduli berapa perubahan harga relatifnya.
+            """)
