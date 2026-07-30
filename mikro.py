@@ -51,6 +51,7 @@ with st.sidebar:
         "Bab 19: [Cadangan Bab 19]",
         "Bab 20: [Cadangan Bab 20]",
         "Lampiran A: Eksplorasi Visual 3D & Peta Kontur Utilitas",
+        "Lampiran B: Matriks Sifat Fungsi Utilitas & Keseimbangan",
     ]
     
     pilihan_modul = st.selectbox("Navigasi Bab:", daftar_bab)
