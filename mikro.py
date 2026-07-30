@@ -1188,7 +1188,7 @@ elif (
         st.markdown("""
             Bayangkan grafik di bawah ini sebagai **'Topografi Gunung Kepuasan'**:
             * 🗺️ **Alas/Lantai (Sumbu X & Y):** Menunjukkan jumlah unit barang $X$ (Makanan) dan barang $Y$ (Paket Data) yang dibeli.
-            * 🏔️ **Ketinggian (Sumbu Z & Spektrum Warna):** Menunjukkan tingkat utilitas/kepuasan total ($U$). Semakin tinggi permukaannya (berubah dari **Ungu Pekat** $\-->$ **Hijau** $\-->$ **Kuning Terang**), semakin tinggi kepuasan konsumen.
+            * 🏔️ **Ketinggian (Sumbu Z & Spektrum Warna):** Menunjukkan tingkat utilitas/kepuasan total ($U$). Semakin tinggi permukaannya (berubah dari **Ungu Pekat** --> **Hijau** --> **Kuning Terang**), semakin tinggi kepuasan konsumen.
             * 🔴 **Titik Merah:** Adalah **Titik Keseimbangan ($E$)**, yaitu tingkat kepuasan tertinggi yang **paling optimal dan sanggup dibeli** sesuai batasan anggaran konsumen.
             * 🖱️ **Interaktif:** Anda dapat menekan dan menggeser mouse di atas grafik untuk memutar sudut pandang $360^\circ$.
             """)
