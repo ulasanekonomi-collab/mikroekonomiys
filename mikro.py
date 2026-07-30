@@ -1181,48 +1181,58 @@ elif (
   )
 
   with tab_3d:
-    fig_3d = go.Figure()
-    fig_3d.add_trace(
-        go.Surface(
-            z=Z_mesh,
-            x=X_mesh,
-            y=Y_mesh,
-            colorscale="Viridis",
-            opacity=0.85,
-            name="Utilitas U(X,Y)",
-        )
-    )
-    fig_3d.add_trace(
-        go.Scatter3d(
-            x=[opt_x],
-            y=[opt_y],
-            z=[u_opt],
-            mode="markers+text",
-            name="Titik Optimum",
-            text=[f" Optimal ({opt_x:.1f}, {opt_y:.1f})"],
-            textposition="top center",
-            marker=dict(size=8, color="red", symbol="circle"),
-        )
-    )
-    fig_3d.update_layout(
-        title=f"Bukit Utilitas 3D: {tipe_fungsi}",
-        scene=dict(
-            xaxis_title="Barang X (Makanan)",
-            yaxis_title="Barang Y (Paket Data)",
-            zaxis_title="Utilitas Total (U)",
-            # SETTING SUDUT PANDANG KAMERA TERBAIK:
-            camera=dict(
-                eye=dict(
-                    x=1.8, y=-1.8, z=1.4
-                )  # Mengangkat kamera ke atas-depan-kanan
-            ),
-            aspectratio=dict(
-                x=1, y=1, z=0.8
-            ),  # Proporsi tinggi Z agar bukitnya makin kelihatan
-        ),
-        margin=dict(l=10, r=10, b=10, t=40),
-    )
-    st.plotly_chart(fig_3d, use_container_width=True)
+      # --- KOTAK PANDUAN INTERPRETASI ---
+      with st.expander(
+          "🧭 **Petunjuk Praktis: Cara Membaca Grafik 3D Ini**", expanded=True
+      ):
+        st.markdown("""
+            Bayangkan grafik di bawah ini sebagai **'Topografi Gunung Kepuasan'**:
+            * 🗺️ **Alas/Lantai (Sumbu X & Y):** Menunjukkan jumlah unit barang $X$ (Makanan) dan barang $Y$ (Paket Data) yang dibeli.
+            * 🏔️ **Ketinggian (Sumbu Z & Spektrum Warna):** Menunjukkan tingkat utilitas/kepuasan total ($U$). Semakin tinggi permukaannya (berubah dari **Ungu Pekat** $\rightarrow$ **Hijau** $\rightarrow$ **Kuning Terang**), semakin tinggi kepuasan konsumen.
+            * 🔴 **Titik Merah:** Adalah **Titik Keseimbangan ($E$)**, yaitu tingkat kepuasan tertinggi yang **paling optimal dan sanggup dibeli** sesuai batasan anggaran konsumen.
+            * 🖱️ **Interaktif:** Anda dapat menekan dan menggeser mouse di atas grafik untuk memutar sudut pandang $360^\circ$.
+            """)
+
+      # --- PLOTLY 3D SURFACE ---
+      fig_3d = go.Figure()
+      fig_3d.add_trace(
+          go.Surface(
+              z=Z_mesh,
+              x=X_mesh,
+              y=Y_mesh,
+              colorscale="Viridis",
+              opacity=0.88,
+              name="Utilitas U(X,Y)",
+              colorbar=dict(title="Tingkat Kepuasan (U)"),
+          )
+      )
+      fig_3d.add_trace(
+          go.Scatter3d(
+              x=[opt_x],
+              y=[opt_y],
+              z=[u_opt],
+              mode="markers+text",
+              name="Titik Optimum",
+              text=[f" Optimal E ({opt_x:.1f}, {opt_y:.1f})"],
+              textposition="top center",
+              marker=dict(size=9, color="red", symbol="circle"),
+          )
+      )
+
+      # PERBAIKAN SUDUT PANDANG KAMERA (AGAR PERMUKAAN 3D TERLIHAT JELAS)
+      fig_3d.update_layout(
+          title=f"Bukit Utilitas 3D: {tipe_fungsi}",
+          scene=dict(
+              xaxis_title="Barang X (Makanan)",
+              yaxis_title="Barang Y (Paket Data)",
+              zaxis_title="Utilitas Total (U)",
+              camera=dict(eye=dict(x=1.8, y=-1.8, z=1.4)),
+              aspectratio=dict(x=1, y=1, z=0.8),
+          ),
+          margin=dict(l=10, r=10, b=10, t=40),
+      )
+
+      st.plotly_chart(fig_3d, use_container_width=True)
 
   with tab_2d:
     fig_2d = go.Figure()
